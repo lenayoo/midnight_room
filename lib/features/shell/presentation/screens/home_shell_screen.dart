@@ -1,17 +1,16 @@
+import 'dart:async';
+
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../data/mock/mock_quotes.dart';
 import '../../../../data/mock/mock_sounds.dart';
-import '../../../../data/mock/mock_timer_history.dart';
 import '../../../../data/models/quote_item.dart';
 import '../../../../data/models/sound_item.dart';
 import '../../../my/presentation/screens/my_screen.dart';
-import '../../../notification/services/notification_service.dart';
-import '../../../premium/presentation/screens/premium_paywall_screen.dart';
-import '../../../premium/services/premium_service.dart';
 import '../../../quote/presentation/screens/quote_screen.dart';
 import '../../../sounds/presentation/screens/sounds_screen.dart';
-import '../../../timer/presentation/screens/timer_screen.dart';
+import '../../../sounds/services/sound_player_service.dart';
 import '../widgets/app_bottom_navigation_bar.dart';
 
 class HomeShellScreen extends StatefulWidget {
@@ -22,8 +21,7 @@ class HomeShellScreen extends StatefulWidget {
 }
 
 class _HomeShellScreenState extends State<HomeShellScreen> {
-  final PremiumService _premiumService = PremiumService();
-  final NotificationService _notificationService = NotificationService();
+  final SoundPlayerService _soundPlayerService = SoundPlayerService();
 
   int _currentIndex = 0;
   late final Set<String> _favoriteSoundIds =
@@ -38,17 +36,36 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
           .toSet();
   String _currentSoundId = mockSounds.first.id;
   int _quoteIndex = 0;
+  double _playbackVolume = 0.76;
+  PlayerState _playerState = PlayerState.stopped;
+  StreamSubscription<PlayerState>? _playerStateSubscription;
+  String? _loadedSoundId;
+
+  bool get _isPlaying => _playerState == PlayerState.playing;
 
   @override
   void initState() {
     super.initState();
-    _premiumService.initialize();
-    _notificationService.initialize();
+    _playerStateSubscription = _soundPlayerService.onPlayerStateChanged.listen((
+      PlayerState state,
+    ) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _playerState = state;
+      });
+    });
   }
 
   @override
   void dispose() {
-    _premiumService.dispose();
+    final StreamSubscription<PlayerState>? playerStateSubscription =
+        _playerStateSubscription;
+    if (playerStateSubscription != null) {
+      unawaited(playerStateSubscription.cancel());
+    }
+    unawaited(_soundPlayerService.dispose());
     super.dispose();
   }
 
@@ -97,79 +114,67 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
     });
   }
 
-  void _selectSound(SoundItem sound) {
-    if (sound.isPremium && !_premiumService.isPremium) {
-      _openPremiumPaywall();
+  void _showMessage(String message) {
+    if (!mounted) {
       return;
     }
-
-    setState(() {
-      _currentSoundId = sound.id;
-    });
-  }
-
-  void _cycleSound(int direction) {
-    final List<SoundItem> sounds = _sounds;
-    final int currentIndex = sounds.indexWhere(
-      (SoundItem sound) => sound.id == _currentSoundId,
-    );
-
-    for (int step = 1; step <= sounds.length; step++) {
-      final int nextIndex =
-          (currentIndex + (direction * step) + sounds.length) % sounds.length;
-      final SoundItem candidate = sounds[nextIndex];
-      if (!candidate.isPremium || _premiumService.isPremium) {
-        setState(() {
-          _currentSoundId = candidate.id;
-        });
-        return;
-      }
-    }
-
-    _openPremiumPaywall();
-  }
-
-  void _refreshQuote() {
-    setState(() {
-      _quoteIndex = (_quoteIndex + 1) % _quotes.length;
-    });
-  }
-
-  void _showPrototypeMessage(String message) {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
   }
 
-  Future<void> _openPremiumPaywall() async {
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      backgroundColor: Colors.transparent,
-      builder: (BuildContext context) {
-        return PremiumPaywallScreen(
-          subscriptionState: _premiumService.value,
-          onStartTrial: () async {
-            await _premiumService.startFreeTrial();
-            if (!context.mounted) {
-              return;
-            }
-            Navigator.of(context).pop();
-            setState(() {});
-            _showPrototypeMessage(
-              'Premium preview enabled. Billing hooks can replace this stub later.',
-            );
-          },
-          onRestorePurchases: () {
-            Navigator.of(context).pop();
-            _showPrototypeMessage(
-              'Restore flow is scaffolded for real purchase integration.',
-            );
-          },
-        );
-      },
-    );
+  Future<void> _selectSound(SoundItem sound) async {
+    final bool shouldKeepPlaying = _isPlaying;
+
+    setState(() {
+      _currentSoundId = sound.id;
+    });
+
+    if (shouldKeepPlaying) {
+      await _playSound(sound);
+    }
+  }
+
+  void _showNextQuote() {
+    setState(() {
+      _quoteIndex = (_quoteIndex + 1) % _quotes.length;
+    });
+  }
+
+  Future<void> _togglePlayback() async {
+    if (_isPlaying) {
+      await _soundPlayerService.pause();
+      return;
+    }
+
+    if (_playerState == PlayerState.paused &&
+        _loadedSoundId == _currentSoundId) {
+      await _soundPlayerService.resume();
+      return;
+    }
+
+    await _playSound(_currentSound);
+  }
+
+  Future<void> _playSound(SoundItem sound) async {
+    try {
+      await _soundPlayerService.playAsset(
+        sound.audioPath,
+        volume: _playbackVolume,
+      );
+      _loadedSoundId = sound.id;
+    } catch (_) {
+      _showMessage(
+        'Audio preview failed to load. Check assets/sounds/sound1.mp3.',
+      );
+    }
+  }
+
+  Future<void> _updateVolume(double volume) async {
+    setState(() {
+      _playbackVolume = volume;
+    });
+    await _soundPlayerService.setVolume(volume);
   }
 
   @override
@@ -178,71 +183,45 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
       SoundsScreen(
         sounds: _sounds,
         currentSound: _currentSound,
-        isPremium: _premiumService.isPremium,
-        onSelectSound: _selectSound,
+        isPlaying: _isPlaying,
+        volume: _playbackVolume,
+        onSelectSound: (SoundItem sound) {
+          unawaited(_selectSound(sound));
+        },
         onToggleFavorite: _toggleFavorite,
-        onPlayNext: () => _cycleSound(1),
-        onPlayPrevious: () => _cycleSound(-1),
-        onOpenPremium: _openPremiumPaywall,
-      ),
-      TimerScreen(
-        currentSound: _currentSound,
-        isPremium: _premiumService.isPremium,
-        onOpenPremium: _openPremiumPaywall,
+        onPlayPause: () {
+          unawaited(_togglePlayback());
+        },
+        onVolumeChanged: (double volume) {
+          unawaited(_updateVolume(volume));
+        },
       ),
       QuoteScreen(
         quote: _currentQuote,
         savedCount: _savedQuoteIds.length,
         onToggleSaved: _toggleSavedQuote,
-        onRefresh: _refreshQuote,
-        onShare:
-            () => _showPrototypeMessage(
-              'Share action is ready for the platform share sheet.',
-            ),
+        onNextQuote: _showNextQuote,
       ),
       MyScreen(
-        subscriptionState: _premiumService.value,
         savedQuotes: _quotes.where((QuoteItem quote) => quote.isSaved).toList(),
         favoriteSounds:
             _sounds.where((SoundItem sound) => sound.isFavorite).toList(),
-        timerHistory: mockTimerHistory,
-        onOpenPremium: _openPremiumPaywall,
-        onOpenNotificationPreview:
-            () => _showPrototypeMessage(
-              'Notification service and scheduler are scaffolded for later implementation.',
-            ),
-        onOpenThemePreview:
-            () => _showPrototypeMessage(
-              'Theme switching is ready for premium extensions later.',
-            ),
       ),
     ];
 
     return Scaffold(
-      extendBody: true,
       backgroundColor: Colors.transparent,
-      body: Stack(
-        children: <Widget>[
-          Positioned.fill(
-            child: IndexedStack(index: _currentIndex, children: screens),
-          ),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: SafeArea(
-              top: false,
-              child: AppBottomNavigationBar(
-                currentIndex: _currentIndex,
-                onTap: (int index) {
-                  setState(() {
-                    _currentIndex = index;
-                  });
-                },
-              ),
-            ),
-          ),
-        ],
+      body: IndexedStack(index: _currentIndex, children: screens),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: AppBottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: (int index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+        ),
       ),
     );
   }
