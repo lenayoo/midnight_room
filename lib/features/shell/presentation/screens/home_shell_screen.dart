@@ -1,14 +1,15 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../data/mock/mock_quotes.dart';
 import '../../../../data/mock/mock_sounds.dart';
 import '../../../../data/models/quote_item.dart';
 import '../../../../data/models/sound_item.dart';
 import '../../../my/presentation/screens/my_screen.dart';
 import '../../../quote/presentation/screens/quote_screen.dart';
+import '../../../quote/services/quote_asset_service.dart';
 import '../../../sounds/presentation/screens/sounds_screen.dart';
 import '../../../sounds/services/sound_player_service.dart';
 import '../widgets/app_bottom_navigation_bar.dart';
@@ -21,7 +22,15 @@ class HomeShellScreen extends StatefulWidget {
 }
 
 class _HomeShellScreenState extends State<HomeShellScreen> {
+  static const List<String> _quoteCategories = <String>[
+    'calm',
+    'hope',
+    'reflection',
+  ];
+
   final SoundPlayerService _soundPlayerService = SoundPlayerService();
+  final QuoteAssetService _quoteAssetService = const QuoteAssetService();
+  final Random _random = Random();
 
   int _currentIndex = 0;
   late final Set<String> _favoriteSoundIds =
@@ -29,23 +38,23 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
           .where((SoundItem sound) => sound.isFavorite)
           .map((SoundItem sound) => sound.id)
           .toSet();
-  late final Set<String> _savedQuoteIds =
-      mockQuotes
-          .where((QuoteItem quote) => quote.isSaved)
-          .map((QuoteItem quote) => quote.id)
-          .toSet();
+  final Set<String> _savedQuoteIds = <String>{};
+  List<QuoteItem> _baseQuotes = <QuoteItem>[];
   String _currentSoundId = mockSounds.first.id;
-  int _quoteIndex = 0;
+  String _selectedQuoteCategory = _quoteCategories.first;
+  int? _quoteIndex;
   double _playbackVolume = 0.76;
   PlayerState _playerState = PlayerState.stopped;
   StreamSubscription<PlayerState>? _playerStateSubscription;
   String? _loadedSoundId;
+  bool _isLoadingQuotes = true;
 
   bool get _isPlaying => _playerState == PlayerState.playing;
 
   @override
   void initState() {
     super.initState();
+    unawaited(_loadQuotes());
     _playerStateSubscription = _soundPlayerService.onPlayerStateChanged.listen((
       PlayerState state,
     ) {
@@ -79,11 +88,17 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
   }
 
   List<QuoteItem> get _quotes {
-    return mockQuotes
+    return _baseQuotes
         .map(
           (QuoteItem quote) =>
               quote.copyWith(isSaved: _savedQuoteIds.contains(quote.id)),
         )
+        .toList(growable: false);
+  }
+
+  List<QuoteItem> get _filteredQuotes {
+    return _quotes
+        .where((QuoteItem quote) => quote.category == _selectedQuoteCategory)
         .toList(growable: false);
   }
 
@@ -92,7 +107,53 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
     orElse: () => _sounds.first,
   );
 
-  QuoteItem get _currentQuote => _quotes[_quoteIndex % _quotes.length];
+  QuoteItem? get _currentQuote {
+    if (_filteredQuotes.isEmpty || _quoteIndex == null) {
+      return null;
+    }
+
+    if (_quoteIndex! < 0 || _quoteIndex! >= _filteredQuotes.length) {
+      return null;
+    }
+
+    return _filteredQuotes[_quoteIndex!];
+  }
+
+  Future<void> _loadQuotes() async {
+    try {
+      final List<QuoteItem> loadedQuotes =
+          await _quoteAssetService.loadQuotes();
+      final String initialCategory = _resolveInitialQuoteCategory(loadedQuotes);
+      final List<QuoteItem> initialQuotes = loadedQuotes
+          .where((QuoteItem quote) => quote.category == initialCategory)
+          .toList(growable: false);
+      final int? randomIndex = _pickRandomIndex(
+        length: initialQuotes.length,
+        currentIndex: null,
+      );
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _baseQuotes = loadedQuotes;
+        _selectedQuoteCategory = initialCategory;
+        _quoteIndex = randomIndex;
+        _isLoadingQuotes = false;
+      });
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _baseQuotes = <QuoteItem>[];
+        _quoteIndex = null;
+        _isLoadingQuotes = false;
+      });
+    }
+  }
 
   void _toggleFavorite(SoundItem sound) {
     setState(() {
@@ -105,11 +166,16 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
   }
 
   void _toggleSavedQuote() {
+    final QuoteItem? currentQuote = _currentQuote;
+    if (currentQuote == null) {
+      return;
+    }
+
     setState(() {
-      if (_savedQuoteIds.contains(_currentQuote.id)) {
-        _savedQuoteIds.remove(_currentQuote.id);
+      if (_savedQuoteIds.contains(currentQuote.id)) {
+        _savedQuoteIds.remove(currentQuote.id);
       } else {
-        _savedQuoteIds.add(_currentQuote.id);
+        _savedQuoteIds.add(currentQuote.id);
       }
     });
   }
@@ -136,9 +202,63 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
   }
 
   void _showNextQuote() {
+    final int? nextIndex = _pickRandomIndex(
+      length: _filteredQuotes.length,
+      currentIndex: _quoteIndex,
+    );
+
+    if (nextIndex == null) {
+      return;
+    }
+
     setState(() {
-      _quoteIndex = (_quoteIndex + 1) % _quotes.length;
+      _quoteIndex = nextIndex;
     });
+  }
+
+  void _selectQuoteCategory(String category) {
+    if (category == _selectedQuoteCategory) {
+      return;
+    }
+
+    final List<QuoteItem> nextQuotes = _quotes
+        .where((QuoteItem quote) => quote.category == category)
+        .toList(growable: false);
+    final int? nextIndex = _pickRandomIndex(
+      length: nextQuotes.length,
+      currentIndex: null,
+    );
+
+    setState(() {
+      _selectedQuoteCategory = category;
+      _quoteIndex = nextIndex;
+    });
+  }
+
+  String _resolveInitialQuoteCategory(List<QuoteItem> quotes) {
+    for (final String category in _quoteCategories) {
+      if (quotes.any((QuoteItem quote) => quote.category == category)) {
+        return category;
+      }
+    }
+
+    return quotes.isEmpty ? _quoteCategories.first : quotes.first.category;
+  }
+
+  int? _pickRandomIndex({required int length, required int? currentIndex}) {
+    if (length == 0) {
+      return null;
+    }
+
+    if (length == 1) {
+      return 0;
+    }
+
+    int nextIndex = _random.nextInt(length);
+    while (nextIndex == currentIndex) {
+      nextIndex = _random.nextInt(length);
+    }
+    return nextIndex;
   }
 
   Future<void> _togglePlayback() async {
@@ -198,7 +318,11 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
       ),
       QuoteScreen(
         quote: _currentQuote,
+        isLoading: _isLoadingQuotes,
+        categories: _quoteCategories,
+        selectedCategory: _selectedQuoteCategory,
         savedCount: _savedQuoteIds.length,
+        onSelectCategory: _selectQuoteCategory,
         onToggleSaved: _toggleSavedQuote,
         onNextQuote: _showNextQuote,
       ),

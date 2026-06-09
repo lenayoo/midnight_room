@@ -57,7 +57,7 @@ class MyScreen extends StatelessWidget {
             _SimpleListCard(
               title: 'Saved quotes',
               items: savedQuotes
-                  .map((QuoteItem quote) => '${quote.author} - ${quote.text}')
+                  .map((QuoteItem quote) => quote.text)
                   .toList(growable: false),
               emptyText: 'No saved quotes yet.',
             ),

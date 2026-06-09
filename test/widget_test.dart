@@ -63,7 +63,11 @@ void main() {
         home: Scaffold(
           body: QuoteScreen(
             quote: mockQuotes.first,
+            isLoading: false,
+            categories: const <String>['calm', 'hope', 'reflection'],
+            selectedCategory: 'hope',
             savedCount: 1,
+            onSelectCategory: (_) {},
             onToggleSaved: () {},
             onNextQuote: () {},
           ),
@@ -76,6 +80,9 @@ void main() {
       find.text('Read one quote and save it if you want.'),
       findsOneWidget,
     );
+    expect(find.text('Calm'), findsOneWidget);
+    expect(find.text('Hope'), findsNWidgets(2));
+    expect(find.text('Reflection'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 

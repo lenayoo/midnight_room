@@ -1,0 +1,452 @@
+[
+  {
+    "id": 1,
+    "category": "Calm",
+    "quote": "The night asks nothing from you."
+  },
+  {
+    "id": 2,
+    "category": "Calm",
+    "quote": "Let this moment be enough."
+  },
+  {
+    "id": 3,
+    "category": "Calm",
+    "quote": "A quiet room can hold great peace."
+  },
+  {
+    "id": 4,
+    "category": "Calm",
+    "quote": "Breathe slowly. There is no rush here."
+  },
+  {
+    "id": 5,
+    "category": "Calm",
+    "quote": "Stillness is a place you can return to."
+  },
+  {
+    "id": 6,
+    "category": "Calm",
+    "quote": "The stars shine without making noise."
+  },
+  {
+    "id": 7,
+    "category": "Calm",
+    "quote": "Peace often arrives softly."
+  },
+  {
+    "id": 8,
+    "category": "Calm",
+    "quote": "Let your thoughts settle like falling snow."
+  },
+  {
+    "id": 9,
+    "category": "Calm",
+    "quote": "A gentle evening can heal a busy day."
+  },
+  {
+    "id": 10,
+    "category": "Calm",
+    "quote": "Quiet moments are never wasted."
+  },
+  {
+    "id": 11,
+    "category": "Calm",
+    "quote": "The moon never hurries across the sky."
+  },
+  {
+    "id": 12,
+    "category": "Calm",
+    "quote": "Allow yourself to simply be."
+  },
+  {
+    "id": 13,
+    "category": "Calm",
+    "quote": "Softness can be a strength."
+  },
+  {
+    "id": 14,
+    "category": "Calm",
+    "quote": "Not every silence needs to be filled."
+  },
+  {
+    "id": 15,
+    "category": "Calm",
+    "quote": "Rest belongs in every journey."
+  },
+  {
+    "id": 16,
+    "category": "Calm",
+    "quote": "The ocean reaches the shore one wave at a time."
+  },
+  {
+    "id": 17,
+    "category": "Calm",
+    "quote": "There is beauty in slowing down."
+  },
+  {
+    "id": 18,
+    "category": "Calm",
+    "quote": "The calm you seek may already be within you."
+  },
+  {
+    "id": 19,
+    "category": "Calm",
+    "quote": "A peaceful heart sees clearly."
+  },
+  {
+    "id": 20,
+    "category": "Calm",
+    "quote": "Night is nature's way of whispering, rest."
+  },
+  {
+    "id": 21,
+    "category": "Calm",
+    "quote": "A single deep breath can change the moment."
+  },
+  {
+    "id": 22,
+    "category": "Calm",
+    "quote": "The sky remains vast, even on cloudy nights."
+  },
+  {
+    "id": 23,
+    "category": "Calm",
+    "quote": "You do not have to carry everything tonight."
+  },
+  {
+    "id": 24,
+    "category": "Calm",
+    "quote": "Let the quiet hold you for a while."
+  },
+  {
+    "id": 25,
+    "category": "Calm",
+    "quote": "The world feels lighter when you pause."
+  },
+  {
+    "id": 26,
+    "category": "Calm",
+    "quote": "Gentle moments create lasting memories."
+  },
+  {
+    "id": 27,
+    "category": "Calm",
+    "quote": "The evening sky asks only that you look up."
+  },
+  {
+    "id": 28,
+    "category": "Calm",
+    "quote": "A calm mind is a welcoming place."
+  },
+  {
+    "id": 29,
+    "category": "Calm",
+    "quote": "Peace grows where attention rests."
+  },
+  {
+    "id": 30,
+    "category": "Calm",
+    "quote": "Tonight, let stillness be enough."
+  },
+  {
+    "id": 31,
+    "category": "Hope",
+    "quote": "Every night carries the promise of a new morning."
+  },
+  {
+    "id": 32,
+    "category": "Hope",
+    "quote": "Even the smallest light can guide the way."
+  },
+  {
+    "id": 33,
+    "category": "Hope",
+    "quote": "Tomorrow is quietly on its way."
+  },
+  {
+    "id": 34,
+    "category": "Hope",
+    "quote": "The stars are still there, even behind the clouds."
+  },
+  {
+    "id": 35,
+    "category": "Hope",
+    "quote": "A new chapter often begins in silence."
+  },
+  {
+    "id": 36,
+    "category": "Hope",
+    "quote": "Keep a little room in your heart for wonder."
+  },
+  {
+    "id": 37,
+    "category": "Hope",
+    "quote": "The dawn always finds its way back."
+  },
+  {
+    "id": 38,
+    "category": "Hope",
+    "quote": "Some dreams grow while you rest."
+  },
+  {
+    "id": 39,
+    "category": "Hope",
+    "quote": "The future is built from quiet moments today."
+  },
+  {
+    "id": 40,
+    "category": "Hope",
+    "quote": "One small step can change a direction."
+  },
+  {
+    "id": 41,
+    "category": "Hope",
+    "quote": "Even slow rivers reach the sea."
+  },
+  {
+    "id": 42,
+    "category": "Hope",
+    "quote": "Every sunrise begins with a dark sky."
+  },
+  {
+    "id": 43,
+    "category": "Hope",
+    "quote": "Something beautiful may be closer than it seems."
+  },
+  {
+    "id": 44,
+    "category": "Hope",
+    "quote": "Your story is still unfolding."
+  },
+  {
+    "id": 45,
+    "category": "Hope",
+    "quote": "New possibilities arrive quietly."
+  },
+  {
+    "id": 46,
+    "category": "Hope",
+    "quote": "Trust the journey, even when the road bends."
+  },
+  {
+    "id": 47,
+    "category": "Hope",
+    "quote": "A little hope can brighten a long night."
+  },
+  {
+    "id": 48,
+    "category": "Hope",
+    "quote": "Every ending leaves space for a beginning."
+  },
+  {
+    "id": 49,
+    "category": "Hope",
+    "quote": "The moon returns, no matter how dark the night."
+  },
+  {
+    "id": 50,
+    "category": "Hope",
+    "quote": "There are more good days ahead than you know."
+  },
+  {
+    "id": 51,
+    "category": "Hope",
+    "quote": "Small lights often lead to great journeys."
+  },
+  {
+    "id": 52,
+    "category": "Hope",
+    "quote": "The horizon always waits beyond the hill."
+  },
+  {
+    "id": 53,
+    "category": "Hope",
+    "quote": "You are closer than you think."
+  },
+  {
+    "id": 54,
+    "category": "Hope",
+    "quote": "A quiet heart can carry bright dreams."
+  },
+  {
+    "id": 55,
+    "category": "Hope",
+    "quote": "The next page has not been written yet."
+  },
+  {
+    "id": 56,
+    "category": "Hope",
+    "quote": "Growth often happens where no one can see."
+  },
+  {
+    "id": 57,
+    "category": "Hope",
+    "quote": "The best days sometimes arrive unexpectedly."
+  },
+  {
+    "id": 58,
+    "category": "Hope",
+    "quote": "Keep looking toward the light."
+  },
+  {
+    "id": 59,
+    "category": "Hope",
+    "quote": "Every season brings its own gifts."
+  },
+  {
+    "id": 60,
+    "category": "Hope",
+    "quote": "Tomorrow may surprise you in beautiful ways."
+  },
+  {
+    "id": 61,
+    "category": "Reflection",
+    "quote": "Not every answer needs to arrive today."
+  },
+  {
+    "id": 62,
+    "category": "Reflection",
+    "quote": "The heart often knows before the mind."
+  },
+  {
+    "id": 63,
+    "category": "Reflection",
+    "quote": "Listen carefully to what brings you peace."
+  },
+  {
+    "id": 64,
+    "category": "Reflection",
+    "quote": "Some truths appear only in stillness."
+  },
+  {
+    "id": 65,
+    "category": "Reflection",
+    "quote": "The quiet reveals what matters most."
+  },
+  {
+    "id": 66,
+    "category": "Reflection",
+    "quote": "Your pace does not need comparison."
+  },
+  {
+    "id": 67,
+    "category": "Reflection",
+    "quote": "The journey teaches as much as the destination."
+  },
+  {
+    "id": 68,
+    "category": "Reflection",
+    "quote": "Notice what makes your spirit feel lighter."
+  },
+  {
+    "id": 69,
+    "category": "Reflection",
+    "quote": "Every experience leaves a gift behind."
+  },
+  {
+    "id": 70,
+    "category": "Reflection",
+    "quote": "Wisdom often arrives quietly."
+  },
+  {
+    "id": 71,
+    "category": "Reflection",
+    "quote": "What you nurture grows."
+  },
+  {
+    "id": 72,
+    "category": "Reflection",
+    "quote": "The smallest moments often matter most."
+  },
+  {
+    "id": 73,
+    "category": "Reflection",
+    "quote": "Clarity grows in patient spaces."
+  },
+  {
+    "id": 74,
+    "category": "Reflection",
+    "quote": "The answers you seek may already be within you."
+  },
+  {
+    "id": 75,
+    "category": "Reflection",
+    "quote": "Pay attention to what feels true."
+  },
+  {
+    "id": 76,
+    "category": "Reflection",
+    "quote": "A meaningful life is built one day at a time."
+  },
+  {
+    "id": 77,
+    "category": "Reflection",
+    "quote": "The night invites gentle reflection."
+  },
+  {
+    "id": 78,
+    "category": "Reflection",
+    "quote": "You become what you repeatedly choose."
+  },
+  {
+    "id": 79,
+    "category": "Reflection",
+    "quote": "Growth begins with awareness."
+  },
+  {
+    "id": 80,
+    "category": "Reflection",
+    "quote": "The simplest truths often last the longest."
+  },
+  {
+    "id": 81,
+    "category": "Reflection",
+    "quote": "Look for what brings meaning, not noise."
+  },
+  {
+    "id": 82,
+    "category": "Reflection",
+    "quote": "Every day leaves a lesson behind."
+  },
+  {
+    "id": 83,
+    "category": "Reflection",
+    "quote": "A quiet mind notices more."
+  },
+  {
+    "id": 84,
+    "category": "Reflection",
+    "quote": "What feels heavy may teach something valuable."
+  },
+  {
+    "id": 85,
+    "category": "Reflection",
+    "quote": "There is wisdom in slowing down enough to notice."
+  },
+  {
+    "id": 86,
+    "category": "Reflection",
+    "quote": "The path becomes clear while walking."
+  },
+  {
+    "id": 87,
+    "category": "Reflection",
+    "quote": "Your life does not need to look like anyone else's."
+  },
+  {
+    "id": 88,
+    "category": "Reflection",
+    "quote": "Peace begins where comparison ends."
+  },
+  {
+    "id": 89,
+    "category": "Reflection",
+    "quote": "The most important conversations happen within."
+  },
+  {
+    "id": 90,
+    "category": "Reflection",
+    "quote": "Tonight is a good night to listen to yourself."
+  }
+]
