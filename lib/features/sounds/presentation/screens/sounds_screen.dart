@@ -13,6 +13,7 @@ class SoundsScreen extends StatelessWidget {
     required this.isPlaying,
     required this.volume,
     required this.onSelectSound,
+    required this.onOpenSoundRoom,
     required this.onToggleFavorite,
     required this.onPlayPause,
     required this.onVolumeChanged,
@@ -24,6 +25,7 @@ class SoundsScreen extends StatelessWidget {
   final bool isPlaying;
   final double volume;
   final ValueChanged<SoundItem> onSelectSound;
+  final ValueChanged<SoundItem> onOpenSoundRoom;
   final ValueChanged<SoundItem> onToggleFavorite;
   final VoidCallback onPlayPause;
   final ValueChanged<double> onVolumeChanged;
@@ -45,55 +47,65 @@ class SoundsScreen extends StatelessWidget {
             const SizedBox(height: 8),
             Text('Pick one sound and press play.', style: textTheme.bodyMedium),
             const SizedBox(height: 20),
-            GlassPanel(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text('Selected sound', style: textTheme.titleMedium),
-                  const SizedBox(height: 12),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              currentSound.title,
-                              style: textTheme.headlineSmall,
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              '${currentSound.category} · ${currentSound.duration}',
-                              style: textTheme.bodyMedium,
-                            ),
-                          ],
+            GestureDetector(
+              onTap:
+                  currentSound.videoPath == null
+                      ? null
+                      : () => onOpenSoundRoom(currentSound),
+              child: GlassPanel(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text('Selected sound', style: textTheme.titleMedium),
+                    const SizedBox(height: 12),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                currentSound.title,
+                                style: textTheme.headlineSmall,
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                '${currentSound.category} · ${currentSound.duration}',
+                                style: textTheme.bodyMedium,
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      IconButton(
-                        onPressed: () => onToggleFavorite(currentSound),
-                        icon: Icon(
-                          currentSound.isFavorite
-                              ? Icons.favorite_rounded
-                              : Icons.favorite_border_rounded,
+                        IconButton(
+                          onPressed: () => onToggleFavorite(currentSound),
+                          icon: Icon(
+                            currentSound.isFavorite
+                                ? Icons.favorite_rounded
+                                : Icons.favorite_border_rounded,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  FilledButton.icon(
-                    onPressed: onPlayPause,
-                    icon: Icon(
-                      isPlaying
-                          ? Icons.pause_circle_outline_rounded
-                          : Icons.play_circle_outline_rounded,
+                      ],
                     ),
-                    label: Text(isPlaying ? 'Pause' : 'Play'),
-                  ),
-                  const SizedBox(height: 16),
-                  Text('Volume', style: textTheme.bodySmall),
-                  Slider(value: volume, onChanged: onVolumeChanged),
-                ],
+                    if (currentSound.videoPath != null) ...<Widget>[
+                      const SizedBox(height: 6),
+                      Text('Tap to enter the room.', style: textTheme.bodySmall),
+                    ],
+                    const SizedBox(height: 16),
+                    FilledButton.icon(
+                      onPressed: onPlayPause,
+                      icon: Icon(
+                        isPlaying
+                            ? Icons.pause_circle_outline_rounded
+                            : Icons.play_circle_outline_rounded,
+                      ),
+                      label: Text(isPlaying ? 'Pause' : 'Play'),
+                    ),
+                    const SizedBox(height: 16),
+                    Text('Volume', style: textTheme.bodySmall),
+                    Slider(value: volume, onChanged: onVolumeChanged),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 24),
@@ -105,7 +117,10 @@ class SoundsScreen extends StatelessWidget {
                 child: SoundLibraryTile(
                   sound: sound,
                   isSelected: sound.id == currentSound.id,
-                  onTap: () => onSelectSound(sound),
+                  onTap:
+                      sound.videoPath == null
+                          ? () => onSelectSound(sound)
+                          : () => onOpenSoundRoom(sound),
                   onToggleFavorite: () => onToggleFavorite(sound),
                 ),
               );

@@ -8,6 +8,7 @@ class SoundItem {
     required this.audioPath,
     required this.isPremium,
     required this.isFavorite,
+    this.videoPath,
     this.moodTags = const <String>[],
   });
 
@@ -19,6 +20,7 @@ class SoundItem {
   final String audioPath;
   final bool isPremium;
   final bool isFavorite;
+  final String? videoPath;
   final List<String> moodTags;
 
   SoundItem copyWith({
@@ -30,6 +32,7 @@ class SoundItem {
     String? audioPath,
     bool? isPremium,
     bool? isFavorite,
+    String? videoPath,
     List<String>? moodTags,
   }) {
     return SoundItem(
@@ -41,6 +44,7 @@ class SoundItem {
       audioPath: audioPath ?? this.audioPath,
       isPremium: isPremium ?? this.isPremium,
       isFavorite: isFavorite ?? this.isFavorite,
+      videoPath: videoPath ?? this.videoPath,
       moodTags: moodTags ?? this.moodTags,
     );
   }

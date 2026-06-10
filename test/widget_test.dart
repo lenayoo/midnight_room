@@ -38,6 +38,7 @@ void main() {
             isPlaying: false,
             volume: 0.76,
             onSelectSound: (_) {},
+            onOpenSoundRoom: (_) {},
             onToggleFavorite: (_) {},
             onPlayPause: () {},
             onVolumeChanged: (_) {},

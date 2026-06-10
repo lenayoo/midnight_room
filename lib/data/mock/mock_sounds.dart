@@ -4,15 +4,16 @@ const String _previewAudioAssetPath = 'assets/sounds/sound1.mp3';
 
 const List<SoundItem> mockSounds = <SoundItem>[
   SoundItem(
-    id: 'midnight_rain',
-    title: 'Midnight Rain',
+    id: 'afternoon_rain',
+    title: 'Afternoon Rain',
     category: 'Nature',
     duration: '45 min',
-    imagePath: 'assets/images/midnight_rain.png',
+    imagePath: 'assets/images/afternoon_rain.png',
     audioPath: _previewAudioAssetPath,
     isPremium: false,
     isFavorite: true,
-    moodTags: <String>['Rain', 'Night', 'Relax'],
+    videoPath: 'assets/images/afternoon_rain.mp4',
+    moodTags: <String>['Rain', 'Afternoon', 'Relax'],
   ),
   SoundItem(
     id: 'rainy_forest',

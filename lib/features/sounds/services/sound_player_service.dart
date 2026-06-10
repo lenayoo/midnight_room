@@ -23,6 +23,10 @@ class SoundPlayerService {
     await _player?.resume();
   }
 
+  Future<void> stop() async {
+    await _player?.stop();
+  }
+
   Future<void> setVolume(double volume) async {
     await _player?.setVolume(volume);
   }

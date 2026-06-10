@@ -10,6 +10,7 @@ import '../../../../data/models/sound_item.dart';
 import '../../../my/presentation/screens/my_screen.dart';
 import '../../../quote/presentation/screens/quote_screen.dart';
 import '../../../quote/services/quote_asset_service.dart';
+import '../../../sounds/presentation/screens/sound_room_screen.dart';
 import '../../../sounds/presentation/screens/sounds_screen.dart';
 import '../../../sounds/services/sound_player_service.dart';
 import '../widgets/app_bottom_navigation_bar.dart';
@@ -201,6 +202,32 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
     }
   }
 
+  Future<void> _openSoundRoom(SoundItem sound) async {
+    if (_currentSoundId != sound.id) {
+      setState(() {
+        _currentSoundId = sound.id;
+      });
+    }
+
+    if (_playerState != PlayerState.stopped) {
+      await _soundPlayerService.pause();
+    }
+
+    if (!mounted) {
+      return;
+    }
+
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder:
+            (BuildContext context) => SoundRoomScreen(
+              sound: _currentSound,
+              initialVolume: _playbackVolume,
+            ),
+      ),
+    );
+  }
+
   void _showNextQuote() {
     final int? nextIndex = _pickRandomIndex(
       length: _filteredQuotes.length,
@@ -307,6 +334,9 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
         volume: _playbackVolume,
         onSelectSound: (SoundItem sound) {
           unawaited(_selectSound(sound));
+        },
+        onOpenSoundRoom: (SoundItem sound) {
+          unawaited(_openSoundRoom(sound));
         },
         onToggleFavorite: _toggleFavorite,
         onPlayPause: () {
