@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="midnight_room"
+        android:label="Midnight room"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

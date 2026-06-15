@@ -27,7 +27,7 @@ final List<QuoteItem> mockQuotes = <QuoteItem>[
     id: 'quote_4',
     text: 'Rest is not a reward. It is a rhythm.',
     category: 'calm',
-    author: 'Soundscape Days',
+    author: 'Midnight room',
     date: DateTime(2026, 5, 25),
   ),
 ];

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_gradients.dart';
 import '../../../../core/widgets/ambient_background.dart';
+import '../../../../core/widgets/app_brand_mark.dart';
 import '../../../../core/widgets/glass_panel.dart';
 import '../../../../data/models/quote_item.dart';
 import '../../../../data/models/sound_item.dart';
@@ -29,6 +30,11 @@ class MyScreen extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
           children: <Widget>[
+            const AppBrandMark(
+              subtitle:
+                  'Your saved reflections, favorite rooms, and quiet routine.',
+            ),
+            const SizedBox(height: 20),
             Text('My', style: textTheme.displayMedium),
             const SizedBox(height: 8),
             Text(

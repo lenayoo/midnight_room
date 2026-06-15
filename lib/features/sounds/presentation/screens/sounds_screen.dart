@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_gradients.dart';
 import '../../../../core/widgets/ambient_background.dart';
+import '../../../../core/widgets/app_brand_mark.dart';
 import '../../../../core/widgets/glass_panel.dart';
 import '../../../../core/widgets/section_header.dart';
 import '../../../../data/models/sound_item.dart';
@@ -49,9 +50,10 @@ class SoundsScreen extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
           children: <Widget>[
-            Text('Sounds', style: textTheme.displayMedium),
-            const SizedBox(height: 8),
-            Text('Pick one sound and press play.', style: textTheme.bodyMedium),
+            const AppBrandMark(
+              subtitle:
+                  'A calm room for rain, focus, and gentle night rituals.',
+            ),
             const SizedBox(height: 20),
             GestureDetector(
               onTap:
@@ -118,6 +120,10 @@ class SoundsScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
+            Text('Sound library', style: textTheme.displayMedium),
+            const SizedBox(height: 8),
+            Text('Pick one sound and press play.', style: textTheme.bodyMedium),
+            const SizedBox(height: 20),
             if (yogaSound != null) ...<Widget>[
               const SectionHeader(title: 'Yoga'),
               const SizedBox(height: 12),

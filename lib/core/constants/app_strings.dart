@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AppStrings {
   const AppStrings._();
 
-  static const String appName = 'Soundscape Days';
+  static const String appName = 'Midnight room';
   static const String premiumPrice = '¥490 / month';
   static const String premiumCta = 'Start Free Trial';
   static const String premiumTitle = 'Unlock Your Peaceful Universe';
