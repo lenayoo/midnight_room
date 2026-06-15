@@ -11,11 +11,13 @@ class SoundRoomScreen extends StatefulWidget {
   const SoundRoomScreen({
     required this.sound,
     required this.initialVolume,
+    this.autoStartPlayback = false,
     super.key,
   });
 
   final SoundItem sound;
   final double initialVolume;
+  final bool autoStartPlayback;
 
   @override
   State<SoundRoomScreen> createState() => _SoundRoomScreenState();
@@ -36,6 +38,9 @@ class _SoundRoomScreenState extends State<SoundRoomScreen> {
     final VideoPlayerController? videoController = _videoController;
     if (videoController != null) {
       _initializeVideoFuture = _initializeVideo(videoController);
+    }
+    if (widget.autoStartPlayback) {
+      unawaited(_startPlayback());
     }
   }
 

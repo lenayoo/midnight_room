@@ -34,6 +34,7 @@ void main() {
         home: Scaffold(
           body: SoundsScreen(
             sounds: mockSounds,
+            yogaSound: mockSounds.firstWhere((sound) => sound.id == 'yoga'),
             currentSound: mockSounds.first,
             isPlaying: false,
             volume: 0.76,
@@ -49,6 +50,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Selected sound'), findsOneWidget);
+    expect(find.text('Yoga'), findsWidgets);
     expect(tester.takeException(), isNull);
   });
 

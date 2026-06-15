@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_gradients.dart';
 import '../../../../core/widgets/ambient_background.dart';
 import '../../../../core/widgets/glass_panel.dart';
+import '../../../../core/widgets/section_header.dart';
 import '../../../../data/models/sound_item.dart';
 import '../widgets/sound_library_tile.dart';
 
 class SoundsScreen extends StatelessWidget {
   const SoundsScreen({
     required this.sounds,
+    required this.yogaSound,
     required this.currentSound,
     required this.isPlaying,
     required this.volume,
@@ -21,6 +23,7 @@ class SoundsScreen extends StatelessWidget {
   });
 
   final List<SoundItem> sounds;
+  final SoundItem? yogaSound;
   final SoundItem currentSound;
   final bool isPlaying;
   final double volume;
@@ -33,6 +36,9 @@ class SoundsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
+    final List<SoundItem> librarySounds = sounds
+        .where((SoundItem sound) => sound.id != yogaSound?.id)
+        .toList(growable: false);
 
     return AmbientBackground(
       gradient: AppGradients.screenBackground(0),
@@ -89,7 +95,10 @@ class SoundsScreen extends StatelessWidget {
                     ),
                     if (currentSound.videoPath != null) ...<Widget>[
                       const SizedBox(height: 6),
-                      Text('Tap to enter the room.', style: textTheme.bodySmall),
+                      Text(
+                        'Tap to enter the room.',
+                        style: textTheme.bodySmall,
+                      ),
                     ],
                     const SizedBox(height: 16),
                     FilledButton.icon(
@@ -109,9 +118,18 @@ class SoundsScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
+            if (yogaSound != null) ...<Widget>[
+              const SectionHeader(title: 'Yoga'),
+              const SizedBox(height: 12),
+              _FeaturedSoundCard(
+                sound: yogaSound!,
+                onTap: () => onOpenSoundRoom(yogaSound!),
+              ),
+              const SizedBox(height: 24),
+            ],
             Text('All sounds', style: textTheme.titleLarge),
             const SizedBox(height: 12),
-            ...sounds.map((SoundItem sound) {
+            ...librarySounds.map((SoundItem sound) {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: SoundLibraryTile(
@@ -125,6 +143,73 @@ class SoundsScreen extends StatelessWidget {
                 ),
               );
             }),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _FeaturedSoundCard extends StatelessWidget {
+  const _FeaturedSoundCard({required this.sound, required this.onTap});
+
+  final SoundItem sound;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final TextTheme textTheme = Theme.of(context).textTheme;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(28),
+      child: GlassPanel(
+        borderRadius: const BorderRadius.all(Radius.circular(28)),
+        gradientColors: const <Color>[Color(0x3AB98299), Color(0x1AF4EDE3)],
+        borderColor: const Color(0x33F4EDE3),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Icon(
+                      Icons.self_improvement_rounded,
+                      color: Colors.white,
+                      size: 26,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(sound.title, style: textTheme.headlineSmall),
+                      const SizedBox(height: 4),
+                      Text(
+                        '${sound.category} · ${sound.duration}',
+                        style: textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(Icons.play_circle_fill_rounded, size: 32),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Open the Yoga room and start playback immediately.',
+              style: textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 10),
+            Text(sound.moodTags.join(' · '), style: textTheme.bodySmall),
           ],
         ),
       ),

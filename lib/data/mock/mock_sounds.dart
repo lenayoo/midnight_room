@@ -1,6 +1,7 @@
 import '../models/sound_item.dart';
 
 const String _previewAudioAssetPath = 'assets/sounds/sound1.mp3';
+const String _yogaAudioAssetPath = 'assets/sounds/yoga_sound.mp3';
 
 const List<SoundItem> mockSounds = <SoundItem>[
   SoundItem(
@@ -14,6 +15,18 @@ const List<SoundItem> mockSounds = <SoundItem>[
     isFavorite: true,
     videoPath: 'assets/images/afternoon_rain.mp4',
     moodTags: <String>['Rain', 'Afternoon', 'Relax'],
+  ),
+  SoundItem(
+    id: 'yoga',
+    title: 'Yoga',
+    category: 'Yoga',
+    duration: '24 min',
+    imagePath: 'assets/images/yoga_bg.mp4',
+    audioPath: _yogaAudioAssetPath,
+    isPremium: false,
+    isFavorite: false,
+    videoPath: 'assets/images/yoga_bg.mp4',
+    moodTags: <String>['Stretch', 'Breathe', 'Align'],
   ),
   SoundItem(
     id: 'rainy_forest',

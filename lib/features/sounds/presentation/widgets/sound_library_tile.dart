@@ -90,6 +90,8 @@ class SoundLibraryTile extends StatelessWidget {
         return Icons.nightlight_round;
       case 'Sleep':
         return Icons.bedtime_outlined;
+      case 'Yoga':
+        return Icons.self_improvement_rounded;
       default:
         return Icons.music_note_rounded;
     }

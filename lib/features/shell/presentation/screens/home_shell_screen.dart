@@ -23,6 +23,7 @@ class HomeShellScreen extends StatefulWidget {
 }
 
 class _HomeShellScreenState extends State<HomeShellScreen> {
+  static const String _yogaSoundId = 'yoga';
   static const List<String> _quoteCategories = <String>[
     'calm',
     'hope',
@@ -107,6 +108,15 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
     (SoundItem sound) => sound.id == _currentSoundId,
     orElse: () => _sounds.first,
   );
+
+  SoundItem? get _yogaSound {
+    for (final SoundItem sound in _sounds) {
+      if (sound.id == _yogaSoundId) {
+        return sound;
+      }
+    }
+    return null;
+  }
 
   QuoteItem? get _currentQuote {
     if (_filteredQuotes.isEmpty || _quoteIndex == null) {
@@ -202,7 +212,10 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
     }
   }
 
-  Future<void> _openSoundRoom(SoundItem sound) async {
+  Future<void> _openSoundRoom(
+    SoundItem sound, {
+    bool autoStartPlayback = false,
+  }) async {
     if (_currentSoundId != sound.id) {
       setState(() {
         _currentSoundId = sound.id;
@@ -223,6 +236,7 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
             (BuildContext context) => SoundRoomScreen(
               sound: _currentSound,
               initialVolume: _playbackVolume,
+              autoStartPlayback: autoStartPlayback,
             ),
       ),
     );
@@ -311,9 +325,7 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
       );
       _loadedSoundId = sound.id;
     } catch (_) {
-      _showMessage(
-        'Audio preview failed to load. Check assets/sounds/sound1.mp3.',
-      );
+      _showMessage('Audio preview failed to load. Check ${sound.audioPath}.');
     }
   }
 
@@ -329,6 +341,7 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
     final List<Widget> screens = <Widget>[
       SoundsScreen(
         sounds: _sounds,
+        yogaSound: _yogaSound,
         currentSound: _currentSound,
         isPlaying: _isPlaying,
         volume: _playbackVolume,
@@ -336,7 +349,9 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
           unawaited(_selectSound(sound));
         },
         onOpenSoundRoom: (SoundItem sound) {
-          unawaited(_openSoundRoom(sound));
+          unawaited(
+            _openSoundRoom(sound, autoStartPlayback: sound.id == _yogaSoundId),
+          );
         },
         onToggleFavorite: _toggleFavorite,
         onPlayPause: () {
