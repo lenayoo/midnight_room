@@ -15,11 +15,11 @@ void main() {
     await tester.pumpWidget(const SoundscapeDaysApp());
     await tester.pumpAndSettle();
 
-    expect(find.text('Sounds'), findsNWidgets(2));
+    expect(find.text('Sounds'), findsOneWidget);
     expect(find.text('Quote'), findsOneWidget);
     expect(find.text('My'), findsOneWidget);
     expect(find.text('Timer'), findsNothing);
-    expect(find.text('Pick one sound and press play.'), findsOneWidget);
+    expect(find.text('Selected sound'), findsOneWidget);
   });
 
   testWidgets('standalone sounds screen lays out on a small viewport', (
@@ -34,7 +34,16 @@ void main() {
         home: Scaffold(
           body: SoundsScreen(
             sounds: mockSounds,
-            yogaSound: mockSounds.firstWhere((sound) => sound.id == 'yoga'),
+            featuredRooms:
+                mockSounds
+                    .where(
+                      (sound) => const <String>{
+                        'in_the_universe',
+                        'deep_sleep',
+                        'yoga',
+                      }.contains(sound.id),
+                    )
+                    .toList(),
             currentSound: mockSounds.first,
             isPlaying: false,
             volume: 0.76,
@@ -50,8 +59,19 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Selected sound'), findsOneWidget);
-    expect(find.text('Yoga'), findsWidgets);
     expect(tester.takeException(), isNull);
+  });
+
+  test('mock sounds include new rooms and omit removed items', () {
+    final List<String> soundIds =
+        mockSounds.map((sound) => sound.id).toList(growable: false);
+
+    expect(soundIds, contains('in_the_universe'));
+    expect(soundIds, contains('deep_sleep'));
+    expect(soundIds, isNot(contains('night_train')));
+    expect(soundIds, isNot(contains('soft_piano')));
+    expect(soundIds, isNot(contains('tokyo_night')));
+    expect(soundIds, isNot(contains('morning_birds')));
   });
 
   testWidgets('standalone quote screen lays out on a small viewport', (

@@ -1,6 +1,9 @@
 import '../models/sound_item.dart';
 
 const String _previewAudioAssetPath = 'assets/sounds/sound1.mp3';
+const String _universeAudioAssetPath = 'assets/sounds/universe_sound.mp3';
+const String _underThePalmTreeAudioAssetPath =
+    'assets/sounds/underthepalmtree_sound.mp3';
 const String _yogaAudioAssetPath = 'assets/sounds/yoga_sound.mp3';
 
 const List<SoundItem> mockSounds = <SoundItem>[
@@ -15,6 +18,30 @@ const List<SoundItem> mockSounds = <SoundItem>[
     isFavorite: true,
     videoPath: 'assets/images/afternoon_rain.mp4',
     moodTags: <String>['Rain', 'Afternoon', 'Relax'],
+  ),
+  SoundItem(
+    id: 'in_the_universe',
+    title: 'In the Universe',
+    category: 'Sleep',
+    duration: '52 min',
+    imagePath: 'assets/images/universe_bg.mp4',
+    audioPath: _universeAudioAssetPath,
+    isPremium: false,
+    isFavorite: false,
+    videoPath: 'assets/images/universe_bg.mp4',
+    moodTags: <String>['Night Sky', 'Drift', 'Stillness'],
+  ),
+  SoundItem(
+    id: 'deep_sleep',
+    title: 'Deep Sleep',
+    category: 'Sleep',
+    duration: '64 min',
+    imagePath: 'assets/images/underthepalmtree_bg.mp4',
+    audioPath: _underThePalmTreeAudioAssetPath,
+    isPremium: false,
+    isFavorite: false,
+    videoPath: 'assets/images/underthepalmtree_bg.mp4',
+    moodTags: <String>['Palm', 'Moon', 'Dream'],
   ),
   SoundItem(
     id: 'yoga',
@@ -62,17 +89,6 @@ const List<SoundItem> mockSounds = <SoundItem>[
     moodTags: <String>['Warm', 'Wood', 'Stillness'],
   ),
   SoundItem(
-    id: 'night_train',
-    title: 'Night Train',
-    category: 'City',
-    duration: '40 min',
-    imagePath: 'assets/images/night_train.png',
-    audioPath: _previewAudioAssetPath,
-    isPremium: false,
-    isFavorite: false,
-    moodTags: <String>['Train', 'City', 'Focus'],
-  ),
-  SoundItem(
     id: 'wind_in_trees',
     title: 'Wind in Trees',
     category: 'Nature',
@@ -84,28 +100,6 @@ const List<SoundItem> mockSounds = <SoundItem>[
     moodTags: <String>['Wind', 'Soft', 'Grounded'],
   ),
   SoundItem(
-    id: 'soft_piano',
-    title: 'Soft Piano',
-    category: 'Focus',
-    duration: '50 min',
-    imagePath: 'assets/images/soft_piano.png',
-    audioPath: _previewAudioAssetPath,
-    isPremium: true,
-    isFavorite: false,
-    moodTags: <String>['Piano', 'Deep Work', 'Light'],
-  ),
-  SoundItem(
-    id: 'tokyo_night',
-    title: 'Tokyo Night',
-    category: 'City',
-    duration: '35 min',
-    imagePath: 'assets/images/tokyo_night.png',
-    audioPath: _previewAudioAssetPath,
-    isPremium: false,
-    isFavorite: true,
-    moodTags: <String>['Neon', 'Rain', 'Drift'],
-  ),
-  SoundItem(
     id: 'quiet_cafe',
     title: 'Quiet Cafe',
     category: 'Cafe',
@@ -115,16 +109,5 @@ const List<SoundItem> mockSounds = <SoundItem>[
     isPremium: false,
     isFavorite: false,
     moodTags: <String>['Cafe', 'Pages', 'Cozy'],
-  ),
-  SoundItem(
-    id: 'morning_birds',
-    title: 'Morning Birds',
-    category: 'Nature',
-    duration: '18 min',
-    imagePath: 'assets/images/morning_birds.png',
-    audioPath: _previewAudioAssetPath,
-    isPremium: true,
-    isFavorite: false,
-    moodTags: <String>['Morning', 'Birdsong', 'Light'],
   ),
 ];

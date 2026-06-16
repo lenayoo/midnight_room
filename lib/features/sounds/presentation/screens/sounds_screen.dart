@@ -11,7 +11,7 @@ import '../widgets/sound_library_tile.dart';
 class SoundsScreen extends StatelessWidget {
   const SoundsScreen({
     required this.sounds,
-    required this.yogaSound,
+    required this.featuredRooms,
     required this.currentSound,
     required this.isPlaying,
     required this.volume,
@@ -24,7 +24,7 @@ class SoundsScreen extends StatelessWidget {
   });
 
   final List<SoundItem> sounds;
-  final SoundItem? yogaSound;
+  final List<SoundItem> featuredRooms;
   final SoundItem currentSound;
   final bool isPlaying;
   final double volume;
@@ -37,8 +37,10 @@ class SoundsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
+    final Set<String> featuredRoomIds =
+        featuredRooms.map((SoundItem sound) => sound.id).toSet();
     final List<SoundItem> librarySounds = sounds
-        .where((SoundItem sound) => sound.id != yogaSound?.id)
+        .where((SoundItem sound) => !featuredRoomIds.contains(sound.id))
         .toList(growable: false);
 
     return AmbientBackground(
@@ -124,12 +126,16 @@ class SoundsScreen extends StatelessWidget {
             const SizedBox(height: 8),
             Text('Pick one sound and press play.', style: textTheme.bodyMedium),
             const SizedBox(height: 20),
-            if (yogaSound != null) ...<Widget>[
-              const SectionHeader(title: 'Yoga'),
+            for (final SoundItem sound in featuredRooms) ...<Widget>[
+              SectionHeader(title: sound.title),
               const SizedBox(height: 12),
               _FeaturedSoundCard(
-                sound: yogaSound!,
-                onTap: () => onOpenSoundRoom(yogaSound!),
+                sound: sound,
+                iconData: _featuredIconForSound(sound),
+                description: _featuredDescriptionForSound(sound),
+                gradientColors: _featuredGradientColorsForSound(sound),
+                borderColor: _featuredBorderColorForSound(sound),
+                onTap: () => onOpenSoundRoom(sound),
               ),
               const SizedBox(height: 24),
             ],
@@ -157,9 +163,20 @@ class SoundsScreen extends StatelessWidget {
 }
 
 class _FeaturedSoundCard extends StatelessWidget {
-  const _FeaturedSoundCard({required this.sound, required this.onTap});
+  const _FeaturedSoundCard({
+    required this.sound,
+    required this.iconData,
+    required this.description,
+    required this.gradientColors,
+    required this.borderColor,
+    required this.onTap,
+  });
 
   final SoundItem sound;
+  final IconData iconData;
+  final String description;
+  final List<Color> gradientColors;
+  final Color borderColor;
   final VoidCallback onTap;
 
   @override
@@ -171,8 +188,8 @@ class _FeaturedSoundCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(28),
       child: GlassPanel(
         borderRadius: const BorderRadius.all(Radius.circular(28)),
-        gradientColors: const <Color>[Color(0x3AB98299), Color(0x1AF4EDE3)],
-        borderColor: const Color(0x33F4EDE3),
+        gradientColors: gradientColors,
+        borderColor: borderColor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -183,13 +200,9 @@ class _FeaturedSoundCard extends StatelessWidget {
                     color: Colors.white.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(18),
                   ),
-                  child: const Padding(
+                  child: Padding(
                     padding: EdgeInsets.all(12),
-                    child: Icon(
-                      Icons.self_improvement_rounded,
-                      color: Colors.white,
-                      size: 26,
-                    ),
+                    child: Icon(iconData, color: Colors.white, size: 26),
                   ),
                 ),
                 const SizedBox(width: 14),
@@ -210,15 +223,56 @@ class _FeaturedSoundCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-            Text(
-              'Open the Yoga room and start playback immediately.',
-              style: textTheme.bodyMedium,
-            ),
+            Text(description, style: textTheme.bodyMedium),
             const SizedBox(height: 10),
             Text(sound.moodTags.join(' · '), style: textTheme.bodySmall),
           ],
         ),
       ),
     );
+  }
+}
+
+IconData _featuredIconForSound(SoundItem sound) {
+  switch (sound.id) {
+    case 'in_the_universe':
+      return Icons.auto_awesome_rounded;
+    case 'deep_sleep':
+      return Icons.bedtime_rounded;
+    default:
+      return Icons.self_improvement_rounded;
+  }
+}
+
+String _featuredDescriptionForSound(SoundItem sound) {
+  switch (sound.id) {
+    case 'in_the_universe':
+      return 'A quiet cosmic room for slow sleep, stillness, and a softer night pace.';
+    case 'deep_sleep':
+      return 'Palm shadows, warm air, and a slower rhythm for deep late-night rest.';
+    default:
+      return 'Open the Yoga room for gentle breath, space, and grounded movement.';
+  }
+}
+
+List<Color> _featuredGradientColorsForSound(SoundItem sound) {
+  switch (sound.id) {
+    case 'in_the_universe':
+      return const <Color>[Color(0x3A7D8CFF), Color(0x1AB98299)];
+    case 'deep_sleep':
+      return const <Color>[Color(0x33A6C0C5), Color(0x1AD9B99B)];
+    default:
+      return const <Color>[Color(0x3AB98299), Color(0x1AF4EDE3)];
+  }
+}
+
+Color _featuredBorderColorForSound(SoundItem sound) {
+  switch (sound.id) {
+    case 'in_the_universe':
+      return const Color(0x448EA0FF);
+    case 'deep_sleep':
+      return const Color(0x44D9B99B);
+    default:
+      return const Color(0x33F4EDE3);
   }
 }
