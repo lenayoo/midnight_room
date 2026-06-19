@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'app_colors.dart';
 
@@ -35,48 +36,52 @@ class AppTheme {
       scaffoldBackgroundColor: AppColors.deepNavy,
     );
 
-    final TextTheme textTheme = base.textTheme.copyWith(
-      displayLarge: base.textTheme.displayLarge?.copyWith(
+    final TextTheme quicksandTextTheme = GoogleFonts.quicksandTextTheme(
+      base.textTheme,
+    );
+
+    final TextTheme textTheme = quicksandTextTheme.copyWith(
+      displayLarge: quicksandTextTheme.displayLarge?.copyWith(
         color: AppColors.moonWhite,
         fontWeight: FontWeight.w600,
         letterSpacing: -1.4,
         height: 1.05,
       ),
-      displayMedium: base.textTheme.displayMedium?.copyWith(
+      displayMedium: quicksandTextTheme.displayMedium?.copyWith(
         color: AppColors.moonWhite,
         fontWeight: FontWeight.w600,
         letterSpacing: -1,
       ),
-      headlineLarge: base.textTheme.headlineLarge?.copyWith(
+      headlineLarge: quicksandTextTheme.headlineLarge?.copyWith(
         color: AppColors.moonWhite,
         fontWeight: FontWeight.w600,
         letterSpacing: -0.8,
       ),
-      headlineMedium: base.textTheme.headlineMedium?.copyWith(
+      headlineMedium: quicksandTextTheme.headlineMedium?.copyWith(
         color: AppColors.moonWhite,
         fontWeight: FontWeight.w600,
       ),
-      titleLarge: base.textTheme.titleLarge?.copyWith(
+      titleLarge: quicksandTextTheme.titleLarge?.copyWith(
         color: AppColors.moonWhite,
         fontWeight: FontWeight.w600,
       ),
-      titleMedium: base.textTheme.titleMedium?.copyWith(
+      titleMedium: quicksandTextTheme.titleMedium?.copyWith(
         color: AppColors.moonWhite,
         fontWeight: FontWeight.w600,
       ),
-      bodyLarge: base.textTheme.bodyLarge?.copyWith(
+      bodyLarge: quicksandTextTheme.bodyLarge?.copyWith(
         color: AppColors.moonWhite.withValues(alpha: 0.92),
         height: 1.5,
       ),
-      bodyMedium: base.textTheme.bodyMedium?.copyWith(
+      bodyMedium: quicksandTextTheme.bodyMedium?.copyWith(
         color: AppColors.moonWhite.withValues(alpha: 0.78),
         height: 1.45,
       ),
-      bodySmall: base.textTheme.bodySmall?.copyWith(
+      bodySmall: quicksandTextTheme.bodySmall?.copyWith(
         color: AppColors.moonWhite.withValues(alpha: 0.64),
         letterSpacing: 0.2,
       ),
-      labelLarge: base.textTheme.labelLarge?.copyWith(
+      labelLarge: quicksandTextTheme.labelLarge?.copyWith(
         color: AppColors.moonWhite,
         fontWeight: FontWeight.w600,
       ),
@@ -84,6 +89,7 @@ class AppTheme {
 
     return base.copyWith(
       textTheme: textTheme,
+      primaryTextTheme: GoogleFonts.quicksandTextTheme(base.primaryTextTheme),
       dividerColor: Colors.white.withValues(alpha: 0.06),
       splashColor: Colors.white.withValues(alpha: 0.05),
       highlightColor: Colors.white.withValues(alpha: 0.03),

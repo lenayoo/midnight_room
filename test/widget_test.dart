@@ -19,7 +19,7 @@ void main() {
     expect(find.text('Quote'), findsOneWidget);
     expect(find.text('My'), findsOneWidget);
     expect(find.text('Timer'), findsNothing);
-    expect(find.text('Selected sound'), findsOneWidget);
+    expect(find.text('Sound library'), findsOneWidget);
   });
 
   testWidgets('standalone sounds screen lays out on a small viewport', (
@@ -45,20 +45,16 @@ void main() {
                     )
                     .toList(),
             currentSound: mockSounds.first,
-            isPlaying: false,
-            volume: 0.76,
             onSelectSound: (_) {},
             onOpenSoundRoom: (_) {},
             onToggleFavorite: (_) {},
-            onPlayPause: () {},
-            onVolumeChanged: (_) {},
           ),
         ),
       ),
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Selected sound'), findsOneWidget);
+    expect(find.text('Sound library'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -89,23 +85,20 @@ void main() {
             isLoading: false,
             categories: const <String>['calm', 'hope', 'reflection'],
             selectedCategory: 'hope',
-            savedCount: 1,
             onSelectCategory: (_) {},
-            onToggleSaved: () {},
-            onNextQuote: () {},
           ),
         ),
       ),
     );
     await tester.pumpAndSettle();
 
-    expect(
-      find.text('Read one quote and save it if you want.'),
-      findsOneWidget,
-    );
+    expect(find.text('Quote'), findsOneWidget);
+    expect(find.text('Peter Drucker'), findsOneWidget);
     expect(find.text('Calm'), findsOneWidget);
-    expect(find.text('Hope'), findsNWidgets(2));
+    expect(find.text('Hope'), findsOneWidget);
     expect(find.text('Reflection'), findsOneWidget);
+    expect(find.text('Next quote'), findsNothing);
+    expect(find.text('Save'), findsNothing);
     expect(tester.takeException(), isNull);
   });
 
@@ -130,9 +123,12 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.text('Only saved quotes and favorite sounds are shown here.'),
+      find.text(
+        'A safe little room for slowing down, softening the noise, and breathing again.',
+      ),
       findsOneWidget,
     );
+    expect(find.textContaining('Just'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 

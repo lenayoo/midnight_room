@@ -49,10 +49,9 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
   String _currentSoundId = mockSounds.first.id;
   String _selectedQuoteCategory = _quoteCategories.first;
   int? _quoteIndex;
-  double _playbackVolume = 0.76;
+  final double _playbackVolume = 0.76;
   PlayerState _playerState = PlayerState.stopped;
   StreamSubscription<PlayerState>? _playerStateSubscription;
-  String? _loadedSoundId;
   bool _isLoadingQuotes = true;
 
   bool get _isPlaying => _playerState == PlayerState.playing;
@@ -175,21 +174,6 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
     });
   }
 
-  void _toggleSavedQuote() {
-    final QuoteItem? currentQuote = _currentQuote;
-    if (currentQuote == null) {
-      return;
-    }
-
-    setState(() {
-      if (_savedQuoteIds.contains(currentQuote.id)) {
-        _savedQuoteIds.remove(currentQuote.id);
-      } else {
-        _savedQuoteIds.add(currentQuote.id);
-      }
-    });
-  }
-
   void _showMessage(String message) {
     if (!mounted) {
       return;
@@ -241,21 +225,6 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
     );
   }
 
-  void _showNextQuote() {
-    final int? nextIndex = _pickRandomIndex(
-      length: _filteredQuotes.length,
-      currentIndex: _quoteIndex,
-    );
-
-    if (nextIndex == null) {
-      return;
-    }
-
-    setState(() {
-      _quoteIndex = nextIndex;
-    });
-  }
-
   void _selectQuoteCategory(String category) {
     if (category == _selectedQuoteCategory) {
       return;
@@ -301,38 +270,15 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
     return nextIndex;
   }
 
-  Future<void> _togglePlayback() async {
-    if (_isPlaying) {
-      await _soundPlayerService.pause();
-      return;
-    }
-
-    if (_playerState == PlayerState.paused &&
-        _loadedSoundId == _currentSoundId) {
-      await _soundPlayerService.resume();
-      return;
-    }
-
-    await _playSound(_currentSound);
-  }
-
   Future<void> _playSound(SoundItem sound) async {
     try {
       await _soundPlayerService.playAsset(
         sound.audioPath,
         volume: _playbackVolume,
       );
-      _loadedSoundId = sound.id;
     } catch (_) {
       _showMessage('Audio preview failed to load. Check ${sound.audioPath}.');
     }
-  }
-
-  Future<void> _updateVolume(double volume) async {
-    setState(() {
-      _playbackVolume = volume;
-    });
-    await _soundPlayerService.setVolume(volume);
   }
 
   @override
@@ -342,8 +288,6 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
         sounds: _sounds,
         featuredRooms: _featuredRooms,
         currentSound: _currentSound,
-        isPlaying: _isPlaying,
-        volume: _playbackVolume,
         onSelectSound: (SoundItem sound) {
           unawaited(_selectSound(sound));
         },
@@ -356,27 +300,19 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
           );
         },
         onToggleFavorite: _toggleFavorite,
-        onPlayPause: () {
-          unawaited(_togglePlayback());
-        },
-        onVolumeChanged: (double volume) {
-          unawaited(_updateVolume(volume));
-        },
       ),
       QuoteScreen(
         quote: _currentQuote,
         isLoading: _isLoadingQuotes,
         categories: _quoteCategories,
         selectedCategory: _selectedQuoteCategory,
-        savedCount: _savedQuoteIds.length,
         onSelectCategory: _selectQuoteCategory,
-        onToggleSaved: _toggleSavedQuote,
-        onNextQuote: _showNextQuote,
       ),
       MyScreen(
         savedQuotes: _quotes.where((QuoteItem quote) => quote.isSaved).toList(),
         favoriteSounds:
             _sounds.where((SoundItem sound) => sound.isFavorite).toList(),
+        isActive: _currentIndex == 2,
       ),
     ];
 
