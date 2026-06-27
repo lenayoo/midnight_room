@@ -16,7 +16,9 @@ import '../../../sounds/services/sound_player_service.dart';
 import '../widgets/app_bottom_navigation_bar.dart';
 
 class HomeShellScreen extends StatefulWidget {
-  const HomeShellScreen({super.key});
+  const HomeShellScreen({this.userName, super.key});
+
+  final String? userName;
 
   @override
   State<HomeShellScreen> createState() => _HomeShellScreenState();
@@ -323,6 +325,7 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
         top: false,
         child: AppBottomNavigationBar(
           currentIndex: _currentIndex,
+          profileLabel: widget.userName,
           onTap: (int index) {
             setState(() {
               _currentIndex = index;

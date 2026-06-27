@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'core/constants/app_strings.dart';
 import 'core/theme/app_theme.dart';
-import 'features/shell/presentation/screens/home_shell_screen.dart';
+import 'features/shell/presentation/screens/launch_flow_screen.dart';
 
 class SoundscapeDaysApp extends StatelessWidget {
   const SoundscapeDaysApp({super.key});
@@ -13,7 +13,7 @@ class SoundscapeDaysApp extends StatelessWidget {
       title: AppStrings.appName,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.build(),
-      home: const HomeShellScreen(),
+      home: const LaunchFlowScreen(),
     );
   }
 }
