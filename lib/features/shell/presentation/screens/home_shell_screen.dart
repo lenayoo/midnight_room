@@ -208,7 +208,7 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
     }
 
     if (_playerState != PlayerState.stopped) {
-      await _soundPlayerService.pause();
+      await _soundPlayerService.stop();
     }
 
     if (!mounted) {
@@ -219,7 +219,7 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
       MaterialPageRoute<void>(
         builder:
             (BuildContext context) => SoundRoomScreen(
-              sound: _currentSound,
+              sound: sound,
               initialVolume: _playbackVolume,
               autoStartPlayback: autoStartPlayback,
             ),
@@ -297,7 +297,7 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
           unawaited(
             _openSoundRoom(
               sound,
-              autoStartPlayback: _featuredRoomIds.contains(sound.id),
+              autoStartPlayback: sound.videoPath != null,
             ),
           );
         },

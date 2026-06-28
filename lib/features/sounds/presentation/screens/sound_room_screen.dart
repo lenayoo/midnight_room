@@ -32,6 +32,8 @@ class _SoundRoomScreenState extends State<SoundRoomScreen> {
   Future<void>? _initializeVideoFuture;
   bool _isPlaying = false;
   bool _hasStartedPlayback = false;
+  bool _isPreparingMedia = false;
+  String? _playbackErrorMessage;
 
   @override
   void initState() {
@@ -41,7 +43,12 @@ class _SoundRoomScreenState extends State<SoundRoomScreen> {
       _initializeVideoFuture = _initializeVideo(videoController);
     }
     if (widget.autoStartPlayback) {
-      unawaited(_startPlayback());
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) {
+          return;
+        }
+        unawaited(_startPlayback());
+      });
     }
   }
 
@@ -51,28 +58,61 @@ class _SoundRoomScreenState extends State<SoundRoomScreen> {
   }
 
   Future<void> _startPlayback() async {
-    final VideoPlayerController? videoController = _videoController;
-    final Future<void>? initializeVideoFuture = _initializeVideoFuture;
-    if (initializeVideoFuture != null) {
-      await initializeVideoFuture;
-    }
-
-    await videoController?.play();
-    await _soundPlayerService.playAsset(
-      widget.sound.audioPath,
-      volume: widget.initialVolume,
-    );
-
-    if (!mounted) {
+    if (_isPreparingMedia) {
       return;
     }
+
     setState(() {
-      _hasStartedPlayback = true;
-      _isPlaying = true;
+      _isPreparingMedia = true;
+      _playbackErrorMessage = null;
     });
+
+    final VideoPlayerController? videoController = _videoController;
+
+    try {
+      final Future<void>? initializeVideoFuture = _initializeVideoFuture;
+      if (initializeVideoFuture != null) {
+        await initializeVideoFuture;
+      }
+
+      await videoController?.play();
+      await _soundPlayerService.stop();
+      await _soundPlayerService.playAsset(
+        widget.sound.audioPath,
+        volume: widget.initialVolume,
+      );
+
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _hasStartedPlayback = true;
+        _isPlaying = true;
+        _isPreparingMedia = false;
+      });
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+
+      final String message = 'Unable to play ${widget.sound.title}.';
+      setState(() {
+        _isPreparingMedia = false;
+        _isPlaying = false;
+        _playbackErrorMessage = message;
+      });
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
+      debugPrint('Playback error for ${widget.sound.id}: $error');
+    }
   }
 
   Future<void> _togglePlayback() async {
+    if (_isPreparingMedia) {
+      return;
+    }
+
     if (_isPlaying) {
       await _videoController?.pause();
       await _soundPlayerService.pause();
@@ -104,6 +144,7 @@ class _SoundRoomScreenState extends State<SoundRoomScreen> {
 
   @override
   void dispose() {
+    unawaited(_soundPlayerService.stop());
     unawaited(_soundPlayerService.dispose());
     final VideoPlayerController? videoController = _videoController;
     if (videoController != null) {
@@ -193,16 +234,32 @@ class _SoundRoomScreenState extends State<SoundRoomScreen> {
                     style: textTheme.bodyMedium,
                   ),
                   const SizedBox(height: 20),
+                  if (_playbackErrorMessage != null) ...<Widget>[
+                    Text(
+                      _playbackErrorMessage!,
+                      style: textTheme.bodySmall?.copyWith(
+                        color: const Color(0xFFF0B8B8),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
                   Align(
                     alignment: Alignment.center,
                     child: _RoundControlButton(
                       icon:
-                          _isPlaying
+                          _isPreparingMedia
+                              ? Icons.hourglass_top_rounded
+                              : _isPlaying
                               ? Icons.pause_rounded
                               : Icons.play_arrow_rounded,
-                      label: _isPlaying ? 'Pause' : 'Play',
+                      label:
+                          _isPreparingMedia
+                              ? 'Loading'
+                              : _isPlaying
+                              ? 'Pause'
+                              : 'Play',
                       isPrimary: true,
-                      onPressed: _togglePlayback,
+                      onPressed: _isPreparingMedia ? null : _togglePlayback,
                     ),
                   ),
                 ],
