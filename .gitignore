@@ -43,3 +43,8 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Local ad/private config
+android/admob.properties
+ios/Flutter/AdMob.xcconfig
+lib/features/ads/models/admob_ids.local.dart

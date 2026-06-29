@@ -6,6 +6,7 @@ import 'package:video_player/video_player.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/widgets/ambient_background.dart';
 import '../../../../data/models/sound_item.dart';
+import '../../../ads/widgets/top_banner_ad.dart';
 import '../../services/sound_player_service.dart';
 
 class SoundRoomScreen extends StatefulWidget {
@@ -218,6 +219,8 @@ class _SoundRoomScreenState extends State<SoundRoomScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  Offstage(offstage: !_isPlaying, child: const TopBannerAd()),
+                  if (_isPlaying) const SizedBox(height: 8),
                   DecoratedBox(
                     decoration: BoxDecoration(
                       color: Colors.black.withValues(alpha: 0.22),

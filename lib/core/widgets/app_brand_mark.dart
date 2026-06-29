@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../localization/app_localizations.dart';
+import '../theme/app_typography.dart';
 import 'glass_panel.dart';
 
 class AppBrandMark extends StatelessWidget {
@@ -38,9 +39,11 @@ class AppBrandMark extends StatelessWidget {
               children: <Widget>[
                 Text(
                   l10n.appName,
-                  style: textTheme.titleLarge?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
+                  style: AppTypography.brandTitle(
+                    textTheme.titleLarge?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 6),

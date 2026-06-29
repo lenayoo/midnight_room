@@ -36,7 +36,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 250));
 
     expect(find.text('Enter your room'), findsOneWidget);
-    expect(find.text('Welcome back.'), findsNothing);
+    expect(find.text('How can I call you?'), findsOneWidget);
   });
 
   testWidgets('home shell uses the stored name in the bottom bar', (
@@ -52,7 +52,7 @@ void main() {
     expect(find.text('Midnight Room'), findsOneWidget);
   });
 
-  testWidgets('returning users see the welcome back entry scene', (
+  testWidgets('returning users see the welcome entry scene', (
     WidgetTester tester,
   ) async {
     SharedPreferences.setMockInitialValues(<String, Object>{
@@ -65,13 +65,13 @@ void main() {
 
     expect(find.text('Midnight Room'), findsAtLeastNWidgets(1));
     expect(find.text('Welcome back.'), findsOneWidget);
-    expect(find.text('Lena'), findsOneWidget);
     expect(find.text('Enter your room'), findsOneWidget);
+    expect(find.text('Lena'), findsOneWidget);
 
     await tester.tap(find.text('Enter your room'));
     await tester.pump();
 
-    expect(find.text('Midnight Room'), findsAtLeastNWidgets(1));
+    expect(find.text('How can I call you?'), findsNothing);
   });
 
   testWidgets('standalone sounds screen lays out on a small viewport', (

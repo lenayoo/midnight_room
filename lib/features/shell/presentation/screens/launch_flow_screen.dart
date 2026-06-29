@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_gradients.dart';
+import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/ambient_background.dart';
 import '../../../../core/widgets/floating_sparkles.dart';
 import '../../../../core/widgets/soft_reveal_text.dart';
@@ -214,12 +215,14 @@ class _LaunchSceneState extends State<_LaunchScene>
                                 progress: progress,
                                 start: 0.02,
                                 end: 0.22,
-                                style: textTheme.displayLarge?.copyWith(
-                                  color: AppColors.moonWhite,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 64,
-                                  height: 0.94,
-                                  letterSpacing: -0.4,
+                                style: AppTypography.brandTitle(
+                                  textTheme.displayLarge?.copyWith(
+                                    color: AppColors.moonWhite,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 64,
+                                    height: 0.94,
+                                    letterSpacing: -0.4,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 22),
@@ -275,7 +278,6 @@ class _SceneCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppLocalizations l10n = context.l10n;
     final TextTheme textTheme = Theme.of(context).textTheme;
-    final String languageCode = Localizations.localeOf(context).languageCode;
 
     switch (mode) {
       case _LaunchMode.loading:
@@ -400,6 +402,10 @@ class _SceneCard extends StatelessWidget {
         );
       case _LaunchMode.welcomeBack:
         final String displayName = userName ?? l10n.friendLabel;
+        final bool isKoreanName = AppTypography.isKoreanName(displayName);
+        final double greetingSize =
+            Localizations.localeOf(context).languageCode == 'ko' ? 36 : 32;
+        final double nameSize = isKoreanName ? 30 : 30;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -409,18 +415,20 @@ class _SceneCard extends StatelessWidget {
               style: textTheme.headlineMedium?.copyWith(
                 color: AppColors.moonWhite,
                 fontWeight: FontWeight.w500,
-                fontSize: languageCode == 'ko' ? 34 : 30,
+                fontSize: greetingSize,
                 height: 1.08,
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 8),
             Text(
               displayName,
-              style: textTheme.displayMedium?.copyWith(
-                color: AppColors.moonWhite,
-                fontWeight: FontWeight.w500,
-                fontSize: 40,
-                height: 1.0,
+              style: AppTypography.launchName(
+                displayName,
+                textTheme.headlineMedium?.copyWith(
+                  color: AppColors.moonWhite,
+                  fontSize: nameSize,
+                  height: 1.0,
+                ),
               ),
             ),
             const SizedBox(height: 24),

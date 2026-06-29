@@ -645,7 +645,7 @@ class AppLocalizations {
   String get friendLabel {
     switch (_languageCode) {
       case 'ja':
-        return '友だち';
+        return 'ともだち';
       case 'ko':
         return '친구';
       default:

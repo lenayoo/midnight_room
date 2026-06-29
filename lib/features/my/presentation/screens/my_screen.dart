@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/floating_sparkles.dart';
 import '../../../../core/widgets/soft_reveal_text.dart';
 import '../../../../data/models/quote_item.dart';
@@ -94,12 +95,14 @@ class _MyScreenState extends State<MyScreen>
                             progress: progress,
                             start: 0.04,
                             end: 0.11,
-                            style: textTheme.displayMedium?.copyWith(
-                              color: AppColors.moonWhite,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 50,
-                              height: 0.95,
-                              letterSpacing: -0.2,
+                            style: AppTypography.brandTitle(
+                              textTheme.displayMedium?.copyWith(
+                                color: AppColors.moonWhite,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 50,
+                                height: 0.95,
+                                letterSpacing: -0.2,
+                              ),
                             ),
                           ),
                           const SizedBox(height: 18),
