@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/widgets/ambient_background.dart';
 import '../../../../data/models/sound_item.dart';
 import '../../services/sound_player_service.dart';
@@ -95,7 +96,10 @@ class _SoundRoomScreenState extends State<SoundRoomScreen> {
         return;
       }
 
-      final String message = 'Unable to play ${widget.sound.title}.';
+      final AppLocalizations l10n = context.l10n;
+      final String message = l10n.unableToPlay(
+        l10n.soundTitle(widget.sound.id, fallback: widget.sound.title),
+      );
       setState(() {
         _isPreparingMedia = false;
         _isPlaying = false;
@@ -155,6 +159,7 @@ class _SoundRoomScreenState extends State<SoundRoomScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = context.l10n;
     final TextTheme textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
@@ -227,10 +232,16 @@ class _SoundRoomScreenState extends State<SoundRoomScreen> {
                     ),
                   ),
                   const Spacer(),
-                  Text(widget.sound.title, style: textTheme.headlineMedium),
+                  Text(
+                    l10n.soundTitle(
+                      widget.sound.id,
+                      fallback: widget.sound.title,
+                    ),
+                    style: textTheme.headlineMedium,
+                  ),
                   const SizedBox(height: 8),
                   Text(
-                    widget.sound.moodTags.join(' · '),
+                    l10n.moodTagLabels(widget.sound.moodTags).join(' · '),
                     style: textTheme.bodyMedium,
                   ),
                   const SizedBox(height: 20),
@@ -254,10 +265,10 @@ class _SoundRoomScreenState extends State<SoundRoomScreen> {
                               : Icons.play_arrow_rounded,
                       label:
                           _isPreparingMedia
-                              ? 'Loading'
+                              ? l10n.loadingLabel
                               : _isPlaying
-                              ? 'Pause'
-                              : 'Play',
+                              ? l10n.pauseLabel
+                              : l10n.playLabel,
                       isPrimary: true,
                       onPressed: _isPreparingMedia ? null : _togglePlayback,
                     ),

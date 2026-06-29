@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../core/constants/app_strings.dart';
+import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_gradients.dart';
 import '../../../../core/widgets/ambient_background.dart';
@@ -172,6 +171,7 @@ class _LaunchSceneState extends State<_LaunchScene>
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = context.l10n;
     final TextTheme textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
@@ -210,18 +210,16 @@ class _LaunchSceneState extends State<_LaunchScene>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               SoftRevealText(
-                                text: AppStrings.appName,
+                                text: l10n.appName,
                                 progress: progress,
                                 start: 0.02,
                                 end: 0.22,
-                                style: GoogleFonts.cormorantGaramond(
-                                  textStyle: textTheme.displayLarge?.copyWith(
-                                    color: AppColors.moonWhite,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 64,
-                                    height: 0.94,
-                                    letterSpacing: -0.4,
-                                  ),
+                                style: textTheme.displayLarge?.copyWith(
+                                  color: AppColors.moonWhite,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 64,
+                                  height: 0.94,
+                                  letterSpacing: -0.4,
                                 ),
                               ),
                               const SizedBox(height: 22),
@@ -275,7 +273,9 @@ class _SceneCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = context.l10n;
     final TextTheme textTheme = Theme.of(context).textTheme;
+    final String languageCode = Localizations.localeOf(context).languageCode;
 
     switch (mode) {
       case _LaunchMode.loading:
@@ -283,12 +283,12 @@ class _SceneCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              'Preparing your room...',
+              l10n.preparingRoomLabel,
               style: textTheme.titleLarge?.copyWith(color: AppColors.moonWhite),
             ),
             const SizedBox(height: 10),
             Text(
-              'One quiet moment.',
+              l10n.oneQuietMomentLabel,
               style: textTheme.bodyMedium?.copyWith(
                 color: AppColors.moonWhite.withValues(alpha: 0.72),
               ),
@@ -306,14 +306,12 @@ class _SceneCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  'How can I call you?',
-                  style: GoogleFonts.cormorantGaramond(
-                    textStyle: textTheme.headlineMedium?.copyWith(
-                      color: AppColors.moonWhite,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 34,
-                      height: 1.08,
-                    ),
+                  l10n.howCanICallYouLabel,
+                  style: textTheme.headlineMedium?.copyWith(
+                    color: AppColors.moonWhite,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 34,
+                    height: 1.08,
                   ),
                 ),
                 const SizedBox(height: 26),
@@ -338,21 +336,17 @@ class _SceneCard extends StatelessWidget {
                             decoration: InputDecoration(
                               isDense: true,
                               border: InputBorder.none,
-                              hintText: 'Your name',
-                              hintStyle: GoogleFonts.quicksand(
-                                textStyle: textTheme.titleMedium?.copyWith(
-                                  color: AppColors.moonWhite.withValues(
-                                    alpha: 0.3,
-                                  ),
-                                  fontWeight: FontWeight.w500,
+                              hintText: l10n.yourNameHint,
+                              hintStyle: textTheme.titleMedium?.copyWith(
+                                color: AppColors.moonWhite.withValues(
+                                  alpha: 0.3,
                                 ),
-                              ),
-                            ),
-                            style: GoogleFonts.quicksand(
-                              textStyle: textTheme.headlineSmall?.copyWith(
-                                color: AppColors.moonWhite,
                                 fontWeight: FontWeight.w500,
                               ),
+                            ),
+                            style: textTheme.titleLarge?.copyWith(
+                              color: AppColors.moonWhite,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                           const SizedBox(height: 10),
@@ -393,11 +387,9 @@ class _SceneCard extends StatelessWidget {
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
                             : Text(
-                              'Enter your room',
-                              style: GoogleFonts.quicksand(
-                                textStyle: textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                ),
+                              l10n.enterYourRoomLabel,
+                              style: textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                   ),
@@ -407,18 +399,28 @@ class _SceneCard extends StatelessWidget {
           },
         );
       case _LaunchMode.welcomeBack:
+        final String displayName = userName ?? l10n.friendLabel;
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              'Welcome back, ${userName ?? 'friend'}.',
-              style: GoogleFonts.cormorantGaramond(
-                textStyle: textTheme.headlineMedium?.copyWith(
-                  color: AppColors.moonWhite,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 36,
-                  height: 1.08,
-                ),
+              l10n.welcomeBackGreeting,
+              style: textTheme.headlineMedium?.copyWith(
+                color: AppColors.moonWhite,
+                fontWeight: FontWeight.w500,
+                fontSize: languageCode == 'ko' ? 34 : 30,
+                height: 1.08,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              displayName,
+              style: textTheme.displayMedium?.copyWith(
+                color: AppColors.moonWhite,
+                fontWeight: FontWeight.w500,
+                fontSize: 40,
+                height: 1.0,
               ),
             ),
             const SizedBox(height: 24),
@@ -436,11 +438,9 @@ class _SceneCard extends StatelessWidget {
                   elevation: 0,
                 ),
                 child: Text(
-                  'Enter your room',
-                  style: GoogleFonts.quicksand(
-                    textStyle: textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                  l10n.enterYourRoomLabel,
+                  style: textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),

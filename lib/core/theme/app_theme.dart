@@ -6,7 +6,7 @@ import 'app_colors.dart';
 class AppTheme {
   const AppTheme._();
 
-  static ThemeData build() {
+  static ThemeData build([Locale locale = const Locale('en')]) {
     const ColorScheme colorScheme = ColorScheme(
       brightness: Brightness.dark,
       primary: AppColors.warmBeige,
@@ -36,60 +36,105 @@ class AppTheme {
       scaffoldBackgroundColor: AppColors.deepNavy,
     );
 
-    final TextTheme quicksandTextTheme = GoogleFonts.quicksandTextTheme(
+    final TextTheme localizedBodyTextTheme = _bodyTextTheme(
+      locale,
       base.textTheme,
     );
 
-    final TextTheme textTheme = quicksandTextTheme.copyWith(
-      displayLarge: quicksandTextTheme.displayLarge?.copyWith(
-        color: AppColors.moonWhite,
-        fontWeight: FontWeight.w600,
-        letterSpacing: -1.4,
-        height: 1.05,
+    final TextTheme textTheme = localizedBodyTextTheme.copyWith(
+      displayLarge: _displayFont(
+        locale,
+        localizedBodyTextTheme.displayLarge?.copyWith(
+          color: AppColors.moonWhite,
+          fontWeight: FontWeight.w600,
+          letterSpacing: -1.4,
+          height: 1.05,
+        ),
       ),
-      displayMedium: quicksandTextTheme.displayMedium?.copyWith(
-        color: AppColors.moonWhite,
-        fontWeight: FontWeight.w600,
-        letterSpacing: -1,
+      displayMedium: _displayFont(
+        locale,
+        localizedBodyTextTheme.displayMedium?.copyWith(
+          color: AppColors.moonWhite,
+          fontWeight: FontWeight.w600,
+          letterSpacing: -1,
+        ),
       ),
-      headlineLarge: quicksandTextTheme.headlineLarge?.copyWith(
-        color: AppColors.moonWhite,
-        fontWeight: FontWeight.w600,
-        letterSpacing: -0.8,
+      headlineLarge: _displayFont(
+        locale,
+        localizedBodyTextTheme.headlineLarge?.copyWith(
+          color: AppColors.moonWhite,
+          fontWeight: FontWeight.w600,
+          letterSpacing: -0.8,
+        ),
       ),
-      headlineMedium: quicksandTextTheme.headlineMedium?.copyWith(
-        color: AppColors.moonWhite,
-        fontWeight: FontWeight.w600,
+      headlineMedium: _displayFont(
+        locale,
+        localizedBodyTextTheme.headlineMedium?.copyWith(
+          color: AppColors.moonWhite,
+          fontWeight: FontWeight.w600,
+        ),
       ),
-      titleLarge: quicksandTextTheme.titleLarge?.copyWith(
-        color: AppColors.moonWhite,
-        fontWeight: FontWeight.w600,
+      headlineSmall: _displayFont(
+        locale,
+        localizedBodyTextTheme.headlineSmall?.copyWith(
+          color: AppColors.moonWhite,
+          fontWeight: FontWeight.w600,
+        ),
       ),
-      titleMedium: quicksandTextTheme.titleMedium?.copyWith(
-        color: AppColors.moonWhite,
-        fontWeight: FontWeight.w600,
+      titleLarge: _bodyFont(
+        locale,
+        localizedBodyTextTheme.titleLarge?.copyWith(
+          color: AppColors.moonWhite,
+          fontWeight: FontWeight.w600,
+        ),
       ),
-      bodyLarge: quicksandTextTheme.bodyLarge?.copyWith(
-        color: AppColors.moonWhite.withValues(alpha: 0.92),
-        height: 1.5,
+      titleMedium: _bodyFont(
+        locale,
+        localizedBodyTextTheme.titleMedium?.copyWith(
+          color: AppColors.moonWhite,
+          fontWeight: FontWeight.w600,
+        ),
       ),
-      bodyMedium: quicksandTextTheme.bodyMedium?.copyWith(
-        color: AppColors.moonWhite.withValues(alpha: 0.78),
-        height: 1.45,
+      bodyLarge: _bodyFont(
+        locale,
+        localizedBodyTextTheme.bodyLarge?.copyWith(
+          color: AppColors.moonWhite.withValues(alpha: 0.92),
+          height: 1.5,
+        ),
       ),
-      bodySmall: quicksandTextTheme.bodySmall?.copyWith(
-        color: AppColors.moonWhite.withValues(alpha: 0.64),
-        letterSpacing: 0.2,
+      bodyMedium: _bodyFont(
+        locale,
+        localizedBodyTextTheme.bodyMedium?.copyWith(
+          color: AppColors.moonWhite.withValues(alpha: 0.78),
+          height: 1.45,
+        ),
       ),
-      labelLarge: quicksandTextTheme.labelLarge?.copyWith(
-        color: AppColors.moonWhite,
-        fontWeight: FontWeight.w600,
+      bodySmall: _bodyFont(
+        locale,
+        localizedBodyTextTheme.bodySmall?.copyWith(
+          color: AppColors.moonWhite.withValues(alpha: 0.64),
+          letterSpacing: 0.2,
+        ),
+      ),
+      labelLarge: _bodyFont(
+        locale,
+        localizedBodyTextTheme.labelLarge?.copyWith(
+          color: AppColors.moonWhite,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      labelMedium: _bodyFont(
+        locale,
+        localizedBodyTextTheme.labelMedium?.copyWith(
+          color: AppColors.moonWhite,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
 
     return base.copyWith(
       textTheme: textTheme,
-      primaryTextTheme: GoogleFonts.quicksandTextTheme(base.primaryTextTheme),
+      primaryTextTheme: _bodyTextTheme(locale, base.primaryTextTheme),
       dividerColor: Colors.white.withValues(alpha: 0.06),
       splashColor: Colors.white.withValues(alpha: 0.05),
       highlightColor: Colors.white.withValues(alpha: 0.03),
@@ -114,5 +159,56 @@ class AppTheme {
         modalBackgroundColor: Colors.transparent,
       ),
     );
+  }
+
+  static TextTheme _bodyTextTheme(Locale locale, TextTheme baseTextTheme) {
+    switch (_languageCode(locale)) {
+      case 'ja':
+        return GoogleFonts.zenKakuGothicNewTextTheme(baseTextTheme);
+      case 'ko':
+        return GoogleFonts.gowunDodumTextTheme(baseTextTheme);
+      default:
+        return GoogleFonts.manropeTextTheme(baseTextTheme);
+    }
+  }
+
+  static TextStyle? _displayFont(Locale locale, TextStyle? textStyle) {
+    if (textStyle == null) {
+      return null;
+    }
+
+    switch (_languageCode(locale)) {
+      case 'ja':
+        return GoogleFonts.zenKakuGothicNew(textStyle: textStyle);
+      case 'ko':
+        return GoogleFonts.gowunDodum(textStyle: textStyle);
+      default:
+        return GoogleFonts.cormorantGaramond(textStyle: textStyle);
+    }
+  }
+
+  static TextStyle? _bodyFont(Locale locale, TextStyle? textStyle) {
+    if (textStyle == null) {
+      return null;
+    }
+
+    switch (_languageCode(locale)) {
+      case 'ja':
+        return GoogleFonts.zenKakuGothicNew(textStyle: textStyle);
+      case 'ko':
+        return GoogleFonts.gowunDodum(textStyle: textStyle);
+      default:
+        return GoogleFonts.manrope(textStyle: textStyle);
+    }
+  }
+
+  static String _languageCode(Locale locale) {
+    switch (locale.languageCode) {
+      case 'ja':
+      case 'ko':
+        return locale.languageCode;
+      default:
+        return 'en';
+    }
   }
 }

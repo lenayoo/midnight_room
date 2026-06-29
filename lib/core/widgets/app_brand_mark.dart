@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../constants/app_strings.dart';
+import '../localization/app_localizations.dart';
 import 'glass_panel.dart';
 
 class AppBrandMark extends StatelessWidget {
@@ -12,6 +12,7 @@ class AppBrandMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = context.l10n;
     final TextTheme textTheme = Theme.of(context).textTheme;
 
     return GlassPanel(
@@ -36,7 +37,7 @@ class AppBrandMark extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  AppStrings.appName,
+                  l10n.appName,
                   style: textTheme.titleLarge?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,

@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/localization/app_localizations.dart';
 import '../../../../data/mock/mock_sounds.dart';
 import '../../../../data/models/quote_item.dart';
 import '../../../../data/models/sound_item.dart';
@@ -25,11 +26,6 @@ class HomeShellScreen extends StatefulWidget {
 }
 
 class _HomeShellScreenState extends State<HomeShellScreen> {
-  static const Set<String> _featuredRoomIds = <String>{
-    'in_the_universe',
-    'deep_sleep',
-    'yoga',
-  };
   static const List<String> _quoteCategories = <String>[
     'calm',
     'hope',
@@ -115,7 +111,7 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
   );
 
   List<SoundItem> get _featuredRooms => _sounds
-      .where((SoundItem sound) => _featuredRoomIds.contains(sound.id))
+      .where((SoundItem sound) => sound.isFavorite)
       .toList(growable: false);
 
   QuoteItem? get _currentQuote {
@@ -273,13 +269,15 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
   }
 
   Future<void> _playSound(SoundItem sound) async {
+    final AppLocalizations l10n = context.l10n;
+
     try {
       await _soundPlayerService.playAsset(
         sound.audioPath,
         volume: _playbackVolume,
       );
     } catch (_) {
-      _showMessage('Audio preview failed to load. Check ${sound.audioPath}.');
+      _showMessage(l10n.audioPreviewFailed(sound.audioPath));
     }
   }
 
@@ -295,10 +293,7 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
         },
         onOpenSoundRoom: (SoundItem sound) {
           unawaited(
-            _openSoundRoom(
-              sound,
-              autoStartPlayback: sound.videoPath != null,
-            ),
+            _openSoundRoom(sound, autoStartPlayback: sound.videoPath != null),
           );
         },
         onToggleFavorite: _toggleFavorite,

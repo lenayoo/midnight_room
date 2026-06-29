@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_gradients.dart';
 import '../../../../core/widgets/ambient_background.dart';
@@ -23,6 +24,7 @@ class QuoteScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = context.l10n;
     final TextTheme textTheme = Theme.of(context).textTheme;
 
     return AmbientBackground(
@@ -38,12 +40,14 @@ class QuoteScreen extends StatelessWidget {
             return SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(24, 24, 24, 116),
               child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight - 24),
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight - 24,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      'Quote',
+                      l10n.quoteScreenTitle,
                       style: textTheme.displayMedium?.copyWith(
                         color: AppColors.moonWhite,
                       ),
@@ -52,19 +56,23 @@ class QuoteScreen extends StatelessWidget {
                     _QuoteStage(
                       quote: quote,
                       isLoading: isLoading,
-                      selectedCategoryLabel: _labelForCategory(selectedCategory),
+                      selectedCategoryLabel: l10n.quoteCategoryLabel(
+                        selectedCategory,
+                      ),
                     ),
                     const SizedBox(height: 40),
                     Wrap(
                       spacing: 10,
                       runSpacing: 10,
-                      children: categories.map((String category) {
-                        return _CategoryPill(
-                          label: _labelForCategory(category),
-                          isSelected: category == selectedCategory,
-                          onTap: () => onSelectCategory(category),
-                        );
-                      }).toList(growable: false),
+                      children: categories
+                          .map((String category) {
+                            return _CategoryPill(
+                              label: l10n.quoteCategoryLabel(category),
+                              isSelected: category == selectedCategory,
+                              onTap: () => onSelectCategory(category),
+                            );
+                          })
+                          .toList(growable: false),
                     ),
                   ],
                 ),
@@ -74,22 +82,6 @@ class QuoteScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _labelForCategory(String category) {
-    switch (category) {
-      case 'calm':
-        return 'Calm';
-      case 'hope':
-        return 'Hope';
-      case 'reflection':
-        return 'Reflection';
-      default:
-        if (category.isEmpty) {
-          return '';
-        }
-        return '${category[0].toUpperCase()}${category.substring(1)}';
-    }
   }
 }
 
@@ -106,11 +98,12 @@ class _QuoteStage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = context.l10n;
     final TextTheme textTheme = Theme.of(context).textTheme;
 
     if (isLoading) {
       return Text(
-        'Loading quotes...',
+        l10n.loadingQuotesLabel,
         style: textTheme.bodyLarge?.copyWith(
           color: AppColors.moonWhite.withValues(alpha: 0.78),
         ),
@@ -119,7 +112,7 @@ class _QuoteStage extends StatelessWidget {
 
     if (quote == null) {
       return Text(
-        'No quotes found.',
+        l10n.noQuotesFoundLabel,
         style: textTheme.bodyLarge?.copyWith(
           color: AppColors.moonWhite.withValues(alpha: 0.78),
         ),
@@ -181,7 +174,7 @@ class _QuoteStage extends StatelessWidget {
                 ),
               if (hasAuthor) const SizedBox(height: 8),
               Text(
-                '${_formatDate(quote!.date)}  ·  $selectedCategoryLabel',
+                '${l10n.formatQuoteDate(quote!.date)}  ·  $selectedCategoryLabel',
                 style: textTheme.bodySmall?.copyWith(
                   color: AppColors.moonWhite.withValues(alpha: 0.58),
                   letterSpacing: 0.3,
@@ -244,23 +237,4 @@ class _CategoryPill extends StatelessWidget {
       ),
     );
   }
-}
-
-String _formatDate(DateTime date) {
-  const List<String> months = <String>[
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
-
-  return '${months[date.month - 1]} ${date.day}, ${date.year}';
 }

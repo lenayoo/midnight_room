@@ -2,8 +2,6 @@ import '../models/sound_item.dart';
 
 const String _previewAudioAssetPath = 'assets/sounds/sound1.mp3';
 const String _universeAudioAssetPath = 'assets/sounds/universe_sound.mp3';
-const String _underThePalmTreeAudioAssetPath =
-    'assets/sounds/underthepalmtree_sound.mp3';
 const String _yogaAudioAssetPath = 'assets/sounds/yoga_sound.mp3';
 
 const String _crispMorningVideoAssetPath = 'assets/images/crisp_morning.mp4';
@@ -31,7 +29,7 @@ const List<SoundItem> mockSounds = <SoundItem>[
     imagePath: 'assets/images/afternoon_rain.png',
     audioPath: _previewAudioAssetPath,
     isPremium: false,
-    isFavorite: true,
+    isFavorite: false,
     videoPath: 'assets/images/afternoon_rain.mp4',
     moodTags: <String>['Rain', 'Afternoon', 'Relax'],
   ),
@@ -48,16 +46,16 @@ const List<SoundItem> mockSounds = <SoundItem>[
     moodTags: <String>['Night Sky', 'Drift', 'Stillness'],
   ),
   SoundItem(
-    id: 'deep_sleep',
-    title: 'Deep Sleep',
+    id: 'under_the_stars',
+    title: 'Under the Stars',
     category: 'Sleep',
-    duration: '64 min',
-    imagePath: 'assets/images/underthepalmtree_bg.mp4',
-    audioPath: _underThePalmTreeAudioAssetPath,
+    duration: '52 min',
+    imagePath: _underTheStarVideoAssetPath,
+    audioPath: _underTheStarAudioAssetPath,
     isPremium: false,
     isFavorite: false,
-    videoPath: 'assets/images/underthepalmtree_bg.mp4',
-    moodTags: <String>['Palm', 'Moon', 'Dream'],
+    videoPath: _underTheStarVideoAssetPath,
+    moodTags: <String>['Stars', 'Stillness', 'Dream'],
   ),
   SoundItem(
     id: 'yoga',
@@ -79,7 +77,7 @@ const List<SoundItem> mockSounds = <SoundItem>[
     imagePath: _crispMorningVideoAssetPath,
     audioPath: _crispMorningAudioAssetPath,
     isPremium: false,
-    isFavorite: true,
+    isFavorite: false,
     videoPath: _crispMorningVideoAssetPath,
     moodTags: <String>['Morning', 'Breeze', 'Reset'],
   ),
@@ -91,7 +89,7 @@ const List<SoundItem> mockSounds = <SoundItem>[
     imagePath: _stormyNightVideoAssetPath,
     audioPath: _stormyNightAudioAssetPath,
     isPremium: false,
-    isFavorite: true,
+    isFavorite: false,
     videoPath: _stormyNightVideoAssetPath,
     moodTags: <String>['Thunder', 'Rain', 'Night'],
   ),
@@ -118,18 +116,6 @@ const List<SoundItem> mockSounds = <SoundItem>[
     isFavorite: false,
     videoPath: _sunsetBeachVideoAssetPath,
     moodTags: <String>['Ocean', 'Golden Hour', 'Ease'],
-  ),
-  SoundItem(
-    id: 'under_the_stars',
-    title: 'Under the Stars',
-    category: 'Sleep',
-    duration: '52 min',
-    imagePath: _underTheStarVideoAssetPath,
-    audioPath: _underTheStarAudioAssetPath,
-    isPremium: false,
-    isFavorite: false,
-    videoPath: _underTheStarVideoAssetPath,
-    moodTags: <String>['Stars', 'Stillness', 'Dream'],
   ),
   SoundItem(
     id: 'weekend_rainy_day',

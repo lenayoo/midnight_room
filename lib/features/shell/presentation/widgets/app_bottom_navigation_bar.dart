@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/localization/app_localizations.dart';
+
 class AppBottomNavigationBar extends StatelessWidget {
   const AppBottomNavigationBar({
     required this.currentIndex,
@@ -14,31 +16,33 @@ class AppBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = context.l10n;
+
     return NavigationBar(
       selectedIndex: currentIndex,
       onDestinationSelected: onTap,
       backgroundColor: const Color(0xFF11182E),
       destinations: <Widget>[
-        const NavigationDestination(
+        NavigationDestination(
           icon: Icon(Icons.graphic_eq_rounded),
-          label: 'Sounds',
+          label: l10n.soundsTabLabel,
         ),
-        const NavigationDestination(
+        NavigationDestination(
           icon: Icon(Icons.auto_awesome_rounded),
-          label: 'Quote',
+          label: l10n.quoteTabLabel,
         ),
         NavigationDestination(
           icon: Icon(Icons.person_outline_rounded),
-          label: _resolvedProfileLabel,
+          label: _resolvedProfileLabel(l10n.myTabLabel),
         ),
       ],
     );
   }
 
-  String get _resolvedProfileLabel {
+  String _resolvedProfileLabel(String fallbackLabel) {
     final String? trimmedLabel = profileLabel?.trim();
     if (trimmedLabel == null || trimmedLabel.isEmpty) {
-      return 'My';
+      return fallbackLabel;
     }
 
     return trimmedLabel;

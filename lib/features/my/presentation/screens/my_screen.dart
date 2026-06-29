@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/floating_sparkles.dart';
 import '../../../../core/widgets/soft_reveal_text.dart';
@@ -66,6 +66,7 @@ class _MyScreenState extends State<MyScreen>
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = context.l10n;
     final TextTheme textTheme = Theme.of(context).textTheme;
 
     return ColoredBox(
@@ -89,18 +90,16 @@ class _MyScreenState extends State<MyScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           SoftRevealText(
-                            text: 'Midnight Room',
+                            text: l10n.appName,
                             progress: progress,
                             start: 0.04,
                             end: 0.11,
-                            style: GoogleFonts.cormorantGaramond(
-                              textStyle: textTheme.displayMedium?.copyWith(
-                                color: AppColors.moonWhite,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 50,
-                                height: 0.95,
-                                letterSpacing: -0.2,
-                              ),
+                            style: textTheme.displayMedium?.copyWith(
+                              color: AppColors.moonWhite,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 50,
+                              height: 0.95,
+                              letterSpacing: -0.2,
                             ),
                           ),
                           const SizedBox(height: 18),
@@ -112,8 +111,7 @@ class _MyScreenState extends State<MyScreen>
                           ),
                           const SizedBox(height: 24),
                           SoftRevealText(
-                            text:
-                                'A little room where you can slow down, breathe deeply, and simply be.',
+                            text: l10n.myScreenIntro,
                             progress: progress,
                             start: 0.14,
                             end: 0.32,
@@ -128,25 +126,22 @@ class _MyScreenState extends State<MyScreen>
                           ),
                           const SizedBox(height: 28),
                           SoftRevealText(
-                            text: 'Calm your mind.',
+                            text: l10n.calmYourMindLabel,
                             progress: progress,
                             start: 0.3,
                             end: 0.42,
-                            style: GoogleFonts.cormorantGaramond(
-                              textStyle: textTheme.headlineSmall?.copyWith(
-                                color: AppColors.moonWhite.withValues(
-                                  alpha: 0.92,
-                                ),
-                                fontWeight: FontWeight.w600,
-                                fontSize: 24,
-                                height: 1.2,
+                            style: textTheme.headlineSmall?.copyWith(
+                              color: AppColors.moonWhite.withValues(
+                                alpha: 0.92,
                               ),
+                              fontWeight: FontWeight.w600,
+                              fontSize: 24,
+                              height: 1.2,
                             ),
                           ),
                           const SizedBox(height: 28),
                           SoftRevealText(
-                            text:
-                                'Every breath, every step, and every day is part of celebrating your life.',
+                            text: l10n.myScreenReflection,
                             progress: progress,
                             start: 0.4,
                             end: 0.58,
@@ -161,18 +156,16 @@ class _MyScreenState extends State<MyScreen>
                           ),
                           const SizedBox(height: 40),
                           SoftRevealText(
-                            text: 'Just breathe',
+                            text: l10n.justBreatheLabel,
                             progress: progress,
                             start: 0.64,
                             end: 1,
-                            style: GoogleFonts.cormorantGaramond(
-                              textStyle: textTheme.headlineMedium?.copyWith(
-                                color: AppColors.warmBeige,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 34,
-                                height: 1.0,
-                                letterSpacing: 0.3,
-                              ),
+                            style: textTheme.headlineMedium?.copyWith(
+                              color: AppColors.warmBeige,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 34,
+                              height: 1.0,
+                              letterSpacing: 0.3,
                             ),
                           ),
                         ],
