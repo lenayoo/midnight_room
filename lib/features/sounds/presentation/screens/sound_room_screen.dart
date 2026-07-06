@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/widgets/ambient_background.dart';
 import '../../../../data/models/sound_item.dart';
+import '../../../ads/models/admob_ids.dart';
 import '../../../ads/widgets/top_banner_ad.dart';
 import '../../services/sound_player_service.dart';
 
@@ -25,12 +27,11 @@ class SoundRoomScreen extends StatefulWidget {
   State<SoundRoomScreen> createState() => _SoundRoomScreenState();
 }
 
-class _SoundRoomScreenState extends State<SoundRoomScreen> {
-  late final VideoPlayerController? _videoController =
-      widget.sound.videoPath == null
-          ? null
-          : VideoPlayerController.asset(widget.sound.videoPath!);
+class _SoundRoomScreenState extends State<SoundRoomScreen>
+    with WidgetsBindingObserver {
   final SoundPlayerService _soundPlayerService = SoundPlayerService();
+
+  VideoPlayerController? _videoController;
   Future<void>? _initializeVideoFuture;
   bool _isPlaying = false;
   bool _hasStartedPlayback = false;
@@ -40,9 +41,19 @@ class _SoundRoomScreenState extends State<SoundRoomScreen> {
   @override
   void initState() {
     super.initState();
-    final VideoPlayerController? videoController = _videoController;
-    if (videoController != null) {
-      _initializeVideoFuture = _initializeVideo(videoController);
+    WidgetsBinding.instance.addObserver(this);
+    if (widget.sound.videoPath != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) {
+          return;
+        }
+        Future<void>.delayed(const Duration(milliseconds: 180), () {
+          if (!mounted) {
+            return;
+          }
+          unawaited(_ensureVideoReady(silent: true));
+        });
+      });
     }
     if (widget.autoStartPlayback) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -51,6 +62,76 @@ class _SoundRoomScreenState extends State<SoundRoomScreen> {
         }
         unawaited(_startPlayback());
       });
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
+      unawaited(_pauseMediaForLifecycle());
+    }
+  }
+
+  Future<void> _pauseMediaForLifecycle() async {
+    await _videoController?.pause();
+    await _soundPlayerService.pause();
+
+    if (!mounted || !_isPlaying) {
+      return;
+    }
+
+    setState(() {
+      _isPlaying = false;
+    });
+  }
+
+  Future<void> _ensureVideoReady({bool silent = false}) async {
+    final String? videoPath = widget.sound.videoPath;
+    if (videoPath == null) {
+      return;
+    }
+
+    final Future<void>? existingFuture = _initializeVideoFuture;
+    if (existingFuture != null) {
+      if (silent) {
+        try {
+          await existingFuture;
+        } catch (_) {}
+        return;
+      }
+
+      await existingFuture;
+      return;
+    }
+
+    final VideoPlayerController controller = VideoPlayerController.asset(
+      videoPath,
+    );
+    _videoController = controller;
+
+    final Future<void> initializeFuture = _initializeVideo(controller);
+    _initializeVideoFuture = initializeFuture;
+
+    if (mounted) {
+      setState(() {});
+    }
+
+    try {
+      await initializeFuture;
+    } catch (error) {
+      if (identical(_videoController, controller)) {
+        _videoController = null;
+        _initializeVideoFuture = null;
+      }
+      await controller.dispose();
+      if (kDebugMode) {
+        debugPrint('Video preview error for ${widget.sound.id}: $error');
+      }
+      if (!silent) {
+        rethrow;
+      }
     }
   }
 
@@ -69,15 +150,9 @@ class _SoundRoomScreenState extends State<SoundRoomScreen> {
       _playbackErrorMessage = null;
     });
 
-    final VideoPlayerController? videoController = _videoController;
-
     try {
-      final Future<void>? initializeVideoFuture = _initializeVideoFuture;
-      if (initializeVideoFuture != null) {
-        await initializeVideoFuture;
-      }
-
-      await videoController?.play();
+      await _ensureVideoReady();
+      await _videoController?.play();
       await _soundPlayerService.stop();
       await _soundPlayerService.playAsset(
         widget.sound.audioPath,
@@ -109,7 +184,9 @@ class _SoundRoomScreenState extends State<SoundRoomScreen> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(message)));
-      debugPrint('Playback error for ${widget.sound.id}: $error');
+      if (kDebugMode) {
+        debugPrint('Playback error for ${widget.sound.id}: $error');
+      }
     }
   }
 
@@ -132,6 +209,7 @@ class _SoundRoomScreenState extends State<SoundRoomScreen> {
     }
 
     if (_hasStartedPlayback) {
+      await _ensureVideoReady(silent: true);
       await _videoController?.play();
       await _soundPlayerService.resume();
 
@@ -149,9 +227,10 @@ class _SoundRoomScreenState extends State<SoundRoomScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    final VideoPlayerController? videoController = _videoController;
     unawaited(_soundPlayerService.stop());
     unawaited(_soundPlayerService.dispose());
-    final VideoPlayerController? videoController = _videoController;
     if (videoController != null) {
       unawaited(videoController.dispose());
     }
@@ -168,38 +247,7 @@ class _SoundRoomScreenState extends State<SoundRoomScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[
-          if (_videoController != null)
-            FutureBuilder<void>(
-              future: _initializeVideoFuture,
-              builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-                if (snapshot.connectionState != ConnectionState.done) {
-                  return const ColoredBox(color: Color(0xFF0B1020));
-                }
-
-                final VideoPlayerController controller = _videoController;
-                return FittedBox(
-                  fit: BoxFit.cover,
-                  child: SizedBox(
-                    width: controller.value.size.width,
-                    height: controller.value.size.height,
-                    child: VideoPlayer(controller),
-                  ),
-                );
-              },
-            )
-          else
-            const AmbientBackground(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: <Color>[
-                  Color(0xFF0B1020),
-                  Color(0xFF1B2440),
-                  Color(0xFF3A335C),
-                ],
-              ),
-              child: SizedBox.expand(),
-            ),
+          _videoBackground(),
           const DecoratedBox(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -219,8 +267,9 @@ class _SoundRoomScreenState extends State<SoundRoomScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Offstage(offstage: !_isPlaying, child: const TopBannerAd()),
-                  if (_isPlaying) const SizedBox(height: 8),
+                  if (_isPlaying && AdMobIds.shouldLoadAds) const TopBannerAd(),
+                  if (_isPlaying && AdMobIds.shouldLoadAds)
+                    const SizedBox(height: 8),
                   DecoratedBox(
                     decoration: BoxDecoration(
                       color: Colors.black.withValues(alpha: 0.22),
@@ -284,6 +333,44 @@ class _SoundRoomScreenState extends State<SoundRoomScreen> {
       ),
     );
   }
+
+  Widget _videoBackground() {
+    final VideoPlayerController? videoController = _videoController;
+    final Future<void>? initializeVideoFuture = _initializeVideoFuture;
+
+    if (videoController == null || initializeVideoFuture == null) {
+      return const AmbientBackground(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: <Color>[
+            Color(0xFF0B1020),
+            Color(0xFF1B2440),
+            Color(0xFF3A335C),
+          ],
+        ),
+        child: SizedBox.expand(),
+      );
+    }
+
+    return FutureBuilder<void>(
+      future: initializeVideoFuture,
+      builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return const ColoredBox(color: Color(0xFF0B1020));
+        }
+
+        return FittedBox(
+          fit: BoxFit.cover,
+          child: SizedBox(
+            width: videoController.value.size.width,
+            height: videoController.value.size.height,
+            child: VideoPlayer(videoController),
+          ),
+        );
+      },
+    );
+  }
 }
 
 class _RoundControlButton extends StatelessWidget {
@@ -319,22 +406,25 @@ class _RoundControlButton extends StatelessWidget {
             border: Border.all(
               color:
                   isPrimary
-                      ? const Color(0x99F4EDE3)
-                      : Colors.white.withValues(alpha: 0.18),
+                      ? Colors.white.withValues(alpha: 0.18)
+                      : Colors.white.withValues(alpha: 0.12),
             ),
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.22),
-                blurRadius: 24,
-                offset: const Offset(0, 12),
-              ),
-            ],
+            boxShadow:
+                isPrimary
+                    ? <BoxShadow>[
+                      BoxShadow(
+                        color: const Color(0x55D9B99B),
+                        blurRadius: 28,
+                        spreadRadius: 2,
+                      ),
+                    ]
+                    : const <BoxShadow>[],
           ),
           child: IconButton(
             onPressed: onPressed,
-            icon: Icon(icon, size: 32),
-            padding: const EdgeInsets.all(18),
-            splashRadius: 30,
+            iconSize: isPrimary ? 48 : 28,
+            padding: EdgeInsets.all(isPrimary ? 24 : 18),
+            icon: Icon(icon),
           ),
         ),
       ),

@@ -46,5 +46,10 @@ app.*.map.json
 
 # Local ad/private config
 android/admob.properties
+android/key.properties
+android/*.jks
+android/*.keystore
+dart_defines.json
+dart-defines.json
 ios/Flutter/AdMob.xcconfig
 lib/features/ads/models/admob_ids.local.dart

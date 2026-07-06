@@ -1,5 +1,6 @@
 import '../models/sound_item.dart';
 
+const String _afternoonRainVideoAssetPath = 'assets/images/afternoon_rain.mp4';
 const String _previewAudioAssetPath = 'assets/sounds/sound1.mp3';
 const String _universeAudioAssetPath = 'assets/sounds/universe_sound.mp3';
 const String _yogaAudioAssetPath = 'assets/sounds/yoga_sound.mp3';
@@ -26,11 +27,11 @@ const List<SoundItem> mockSounds = <SoundItem>[
     title: 'Afternoon Rain',
     category: 'Nature',
     duration: '45 min',
-    imagePath: 'assets/images/afternoon_rain.png',
+    imagePath: _afternoonRainVideoAssetPath,
     audioPath: _previewAudioAssetPath,
     isPremium: false,
     isFavorite: false,
-    videoPath: 'assets/images/afternoon_rain.mp4',
+    videoPath: _afternoonRainVideoAssetPath,
     moodTags: <String>['Rain', 'Afternoon', 'Relax'],
   ),
   SoundItem(

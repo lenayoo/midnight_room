@@ -152,6 +152,33 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('quote tab fills the body on iPad width', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1024, 1366);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(
+      _buildTestApp(home: const HomeShellScreen(userName: 'Lena')),
+    );
+    await tester.pump(const Duration(milliseconds: 700));
+
+    await tester.tap(find.text('Quote'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 700));
+
+    final Finder quoteScrollView = find.descendant(
+      of: find.byType(QuoteScreen),
+      matching: find.byType(SingleChildScrollView),
+    );
+    final Size quoteSize = tester.getSize(quoteScrollView);
+
+    expect(quoteSize.width, greaterThanOrEqualTo(1000));
+    expect(quoteSize.height, greaterThanOrEqualTo(1180));
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('standalone my screen lays out on a small viewport', (
     WidgetTester tester,
   ) async {
@@ -231,6 +258,42 @@ void main() {
 
     expect(find.text('좋아하는 사운드'), findsOneWidget);
     expect(find.text('마음에 드는 사운드에 하트를 눌러보세요.'), findsOneWidget);
+  });
+
+  testWidgets('quote labels stay Quote in Korean locale', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      _buildTestApp(
+        home: const HomeShellScreen(userName: 'Lena'),
+        locale: const Locale('ko'),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 700));
+
+    await tester.tap(find.text('Quote'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 700));
+
+    expect(find.text('Quote'), findsAtLeastNWidgets(2));
+  });
+
+  testWidgets('quote labels stay Quote in Japanese locale', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      _buildTestApp(
+        home: const HomeShellScreen(userName: 'Lena'),
+        locale: const Locale('ja'),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 700));
+
+    await tester.tap(find.text('Quote'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 700));
+
+    expect(find.text('Quote'), findsAtLeastNWidgets(2));
   });
 
   testWidgets('favoriting a sound promotes it into the room cards', (

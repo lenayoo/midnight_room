@@ -8,7 +8,7 @@ import 'features/ads/models/admob_ids.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (AdMobIds.supportsMobileAds) {
+  if (AdMobIds.shouldLoadAds) {
     await MobileAds.instance.initialize();
   }
 

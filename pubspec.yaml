@@ -68,8 +68,25 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/quotes.json
-    - assets/images/
-    - assets/sounds/
+    - assets/images/appIcon.png
+    - assets/images/afternoon_rain.mp4
+    - assets/images/crisp_morning.mp4
+    - assets/images/stormy_night.mp4
+    - assets/images/summer_night.mp4
+    - assets/images/sunset_beach.mp4
+    - assets/images/under_the_star.mp4
+    - assets/images/universe_bg.mp4
+    - assets/images/weekend_rainny_day.mp4
+    - assets/images/yoga_bg.mp4
+    - assets/sounds/crisp_morning.mp3
+    - assets/sounds/sound1.mp3
+    - assets/sounds/stormy_night.mp3
+    - assets/sounds/summer_night.mp3
+    - assets/sounds/sunset_beach.mp3
+    - assets/sounds/under_the_star.mp3
+    - assets/sounds/universe_sound.mp3
+    - assets/sounds/weekend_rainny_day.mp3
+    - assets/sounds/yoga_sound.mp3
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -20,7 +21,7 @@ class _TopBannerAdState extends State<TopBannerAd> {
   @override
   void initState() {
     super.initState();
-    if (AdMobIds.supportsMobileAds) {
+    if (AdMobIds.shouldLoadAds) {
       _loadBannerAd();
     }
   }
@@ -54,7 +55,9 @@ class _TopBannerAdState extends State<TopBannerAd> {
           });
         },
         onAdFailedToLoad: (Ad ad, LoadAdError error) {
-          debugPrint('Top banner ad failed to load: $error');
+          if (kDebugMode) {
+            debugPrint('Top banner ad failed to load: $error');
+          }
           ad.dispose();
           if (!mounted || _loadAttempts >= _maxLoadAttempts) {
             return;
@@ -75,6 +78,10 @@ class _TopBannerAdState extends State<TopBannerAd> {
 
   @override
   Widget build(BuildContext context) {
+    if (!AdMobIds.shouldLoadAds) {
+      return const SizedBox.shrink();
+    }
+
     final BannerAd? bannerAd = _bannerAd;
     if (!_isLoaded || bannerAd == null) {
       return const SizedBox.shrink();

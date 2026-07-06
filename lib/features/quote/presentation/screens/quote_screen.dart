@@ -27,58 +27,66 @@ class QuoteScreen extends StatelessWidget {
     final AppLocalizations l10n = context.l10n;
     final TextTheme textTheme = Theme.of(context).textTheme;
 
-    return AmbientBackground(
-      gradient: AppGradients.screenBackground(2),
-      primaryOrbColors: const <Color>[Color(0x44E4C8A7), Color(0x00E4C8A7)],
-      secondaryOrbColors: const <Color>[Color(0x33C38B86), Color(0x0011182E)],
-      primaryAlignment: const Alignment(0.88, -0.82),
-      secondaryAlignment: const Alignment(-0.72, 0.58),
-      child: SafeArea(
-        bottom: false,
-        child: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            return SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(24, 24, 24, 116),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight - 24,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      l10n.quoteScreenTitle,
-                      style: textTheme.displayMedium?.copyWith(
-                        color: AppColors.moonWhite,
+    return SizedBox.expand(
+      child: AmbientBackground(
+        gradient: AppGradients.screenBackground(2),
+        primaryOrbColors: const <Color>[Color(0x44E4C8A7), Color(0x00E4C8A7)],
+        secondaryOrbColors: const <Color>[Color(0x33C38B86), Color(0x0011182E)],
+        primaryAlignment: const Alignment(0.88, -0.82),
+        secondaryAlignment: const Alignment(-0.72, 0.58),
+        child: SafeArea(
+          bottom: false,
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              final double minContentWidth =
+                  constraints.maxWidth > 48
+                      ? constraints.maxWidth - 48
+                      : constraints.maxWidth;
+
+              return SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(24, 24, 24, 116),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: minContentWidth,
+                    minHeight: constraints.maxHeight - 24,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        l10n.quoteScreenTitle,
+                        style: textTheme.displayMedium?.copyWith(
+                          color: AppColors.moonWhite,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 44),
-                    _QuoteStage(
-                      quote: quote,
-                      isLoading: isLoading,
-                      selectedCategoryLabel: l10n.quoteCategoryLabel(
-                        selectedCategory,
+                      const SizedBox(height: 44),
+                      _QuoteStage(
+                        quote: quote,
+                        isLoading: isLoading,
+                        selectedCategoryLabel: l10n.quoteCategoryLabel(
+                          selectedCategory,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 40),
-                    Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      children: categories
-                          .map((String category) {
-                            return _CategoryPill(
-                              label: l10n.quoteCategoryLabel(category),
-                              isSelected: category == selectedCategory,
-                              onTap: () => onSelectCategory(category),
-                            );
-                          })
-                          .toList(growable: false),
-                    ),
-                  ],
+                      const SizedBox(height: 40),
+                      Wrap(
+                        spacing: 10,
+                        runSpacing: 10,
+                        children: categories
+                            .map((String category) {
+                              return _CategoryPill(
+                                label: l10n.quoteCategoryLabel(category),
+                                isSelected: category == selectedCategory,
+                                onTap: () => onSelectCategory(category),
+                              );
+                            })
+                            .toList(growable: false),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );

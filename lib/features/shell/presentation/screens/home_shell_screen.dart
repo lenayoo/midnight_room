@@ -315,7 +315,11 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: IndexedStack(index: _currentIndex, children: screens),
+      body: IndexedStack(
+        index: _currentIndex,
+        sizing: StackFit.expand,
+        children: screens,
+      ),
       bottomNavigationBar: SafeArea(
         top: false,
         child: AppBottomNavigationBar(

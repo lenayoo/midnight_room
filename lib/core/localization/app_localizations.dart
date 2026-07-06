@@ -59,9 +59,9 @@ class AppLocalizations {
   String get quoteTabLabel {
     switch (_languageCode) {
       case 'ja':
-        return 'ことば';
+        return 'Quote';
       case 'ko':
-        return '문장';
+        return 'Quote';
       default:
         return 'Quote';
     }
@@ -116,9 +116,9 @@ class AppLocalizations {
   String get quoteScreenTitle {
     switch (_languageCode) {
       case 'ja':
-        return 'ことば';
+        return 'Quote';
       case 'ko':
-        return '문장';
+        return 'Quote';
       default:
         return 'Quote';
     }
