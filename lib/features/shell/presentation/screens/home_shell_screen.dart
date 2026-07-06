@@ -13,6 +13,7 @@ import '../../../quote/presentation/screens/quote_screen.dart';
 import '../../../quote/services/quote_asset_service.dart';
 import '../../../sounds/presentation/screens/sound_room_screen.dart';
 import '../../../sounds/presentation/screens/sounds_screen.dart';
+import '../../../sounds/services/favorite_sounds_service.dart';
 import '../../../sounds/services/sound_player_service.dart';
 import '../widgets/app_bottom_navigation_bar.dart';
 
@@ -33,6 +34,8 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
   ];
 
   final SoundPlayerService _soundPlayerService = SoundPlayerService();
+  final FavoriteSoundsService _favoriteSoundsService =
+      const FavoriteSoundsService();
   final QuoteAssetService _quoteAssetService = const QuoteAssetService();
   final Random _random = Random();
 
@@ -57,6 +60,7 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
   @override
   void initState() {
     super.initState();
+    unawaited(_loadFavoriteSounds());
     unawaited(_loadQuotes());
     _playerStateSubscription = _soundPlayerService.onPlayerStateChanged.listen((
       PlayerState state,
@@ -162,6 +166,21 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
     }
   }
 
+  Future<void> _loadFavoriteSounds() async {
+    final Set<String> storedFavoriteSoundIds =
+        await _favoriteSoundsService.loadFavoriteSoundIds();
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _favoriteSoundIds
+        ..clear()
+        ..addAll(storedFavoriteSoundIds);
+    });
+  }
+
   void _toggleFavorite(SoundItem sound) {
     setState(() {
       if (_favoriteSoundIds.contains(sound.id)) {
@@ -170,6 +189,12 @@ class _HomeShellScreenState extends State<HomeShellScreen> {
         _favoriteSoundIds.add(sound.id);
       }
     });
+
+    unawaited(
+      _favoriteSoundsService.saveFavoriteSoundIds(
+        Set<String>.from(_favoriteSoundIds),
+      ),
+    );
   }
 
   void _showMessage(String message) {

@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import 'admob_ids.local.dart';
+
 class AdMobIds {
   const AdMobIds._();
 
@@ -10,15 +12,12 @@ class AdMobIds {
 
   static const String androidBannerAdUnitId = String.fromEnvironment(
     'ADMOB_ANDROID_BANNER_AD_UNIT_ID',
+    defaultValue: AdMobLocalIds.androidBannerAdUnitId,
   );
   static const String iosBannerAdUnitId = String.fromEnvironment(
     'ADMOB_IOS_BANNER_AD_UNIT_ID',
+    defaultValue: AdMobLocalIds.iosBannerAdUnitId,
   );
-
-  static const Set<String> _testBannerAdUnitIds = <String>{
-    _androidTestBannerAdUnitId,
-    _iosTestBannerAdUnitId,
-  };
 
   static bool get supportsMobileAds {
     if (kIsWeb) {
@@ -43,7 +42,7 @@ class AdMobIds {
       return true;
     }
 
-    return _isLiveId(bannerAdUnitId, _testBannerAdUnitIds);
+    return true;
   }
 
   static String get bannerAdUnitId {
@@ -74,10 +73,5 @@ class AdMobIds {
           'Banner ads are only configured for iOS and Android.',
         );
     }
-  }
-
-  static bool _isLiveId(String value, Set<String> knownTestIds) {
-    final String normalized = value.trim();
-    return normalized.isNotEmpty && !knownTestIds.contains(normalized);
   }
 }

@@ -12,7 +12,9 @@ import 'package:midnight_room/features/my/presentation/screens/my_screen.dart';
 import 'package:midnight_room/features/quote/presentation/screens/quote_screen.dart';
 import 'package:midnight_room/features/shell/presentation/screens/home_shell_screen.dart';
 import 'package:midnight_room/features/sounds/presentation/screens/sounds_screen.dart';
+import 'package:midnight_room/features/sounds/services/favorite_sounds_service.dart';
 import 'package:midnight_room/features/sounds/presentation/widgets/sound_library_tile.dart';
+import 'package:midnight_room/features/ads/models/admob_ids.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -260,6 +262,21 @@ void main() {
     expect(find.text('마음에 드는 사운드에 하트를 눌러보세요.'), findsOneWidget);
   });
 
+  testWidgets('stored favorite sounds are restored on launch', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(<String, Object>{
+      FavoriteSoundsService.favoriteSoundIdsKey: <String>['afternoon_rain'],
+    });
+
+    await tester.pumpWidget(
+      _buildTestApp(home: const HomeShellScreen(userName: 'Lena')),
+    );
+    await tester.pump(const Duration(milliseconds: 700));
+
+    expect(find.text('Afternoon Rain'), findsNWidgets(2));
+  });
+
   testWidgets('quote labels stay Quote in Korean locale', (
     WidgetTester tester,
   ) async {
@@ -322,7 +339,31 @@ void main() {
       ),
       findsOneWidget,
     );
+
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+    expect(
+      preferences.getStringList(FavoriteSoundsService.favoriteSoundIdsKey),
+      contains('afternoon_rain'),
+    );
   });
+
+  testWidgets(
+    'admob uses test banner ids outside release builds',
+    (WidgetTester tester) async {
+      expect(AdMobIds.shouldLoadAds, isTrue);
+      expect(
+        <String>{
+          'ca-app-pub-3940256099942544/6300978111',
+          'ca-app-pub-3940256099942544/2934735716',
+        }.contains(AdMobIds.bannerAdUnitId),
+        isTrue,
+      );
+    },
+    variant: const TargetPlatformVariant(<TargetPlatform>{
+      TargetPlatform.android,
+      TargetPlatform.iOS,
+    }),
+  );
 
   testWidgets('preview sound asset is bundled', (WidgetTester tester) async {
     final ByteData audioData = await rootBundle.load(
