@@ -1,4 +1,4 @@
-package com.verydays.midnightroom
+package com.verydays.midnight_room
 
 import io.flutter.embedding.android.FlutterActivity
 

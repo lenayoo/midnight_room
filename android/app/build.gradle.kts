@@ -32,7 +32,7 @@ val hasReleaseSigning =
         keystoreProperties.getProperty("keyPassword")?.isNotBlank() == true
 
 android {
-    namespace = "com.verydays.midnightroom"
+    namespace = "com.verydays.midnight_room"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 
@@ -57,7 +57,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.verydays.midnightroom"
+        applicationId = "com.verydays.midnight_room"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
