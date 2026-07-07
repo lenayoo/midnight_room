@@ -44,9 +44,12 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Local ad/private config
+# Local/private config
 android/admob.properties
+android/local.properties
 android/key.properties
+android/release.jks
+android/upload-keystore.jks
 android/*.jks
 android/*.keystore
 dart_defines.json
