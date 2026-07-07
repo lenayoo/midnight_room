@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -126,9 +125,6 @@ class _SoundRoomScreenState extends State<SoundRoomScreen>
         _initializeVideoFuture = null;
       }
       await controller.dispose();
-      if (kDebugMode) {
-        debugPrint('Video preview error for ${widget.sound.id}: $error');
-      }
       if (!silent) {
         rethrow;
       }
@@ -184,9 +180,6 @@ class _SoundRoomScreenState extends State<SoundRoomScreen>
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(message)));
-      if (kDebugMode) {
-        debugPrint('Playback error for ${widget.sound.id}: $error');
-      }
     }
   }
 

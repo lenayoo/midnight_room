@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -55,9 +54,6 @@ class _TopBannerAdState extends State<TopBannerAd> {
           });
         },
         onAdFailedToLoad: (Ad ad, LoadAdError error) {
-          if (kDebugMode) {
-            debugPrint('Top banner ad failed to load: $error');
-          }
           ad.dispose();
           if (!mounted || _loadAttempts >= _maxLoadAttempts) {
             return;
