@@ -33,12 +33,8 @@ iOS app ID:
 - copy `ios/Flutter/AdMob.example.xcconfig` to `ios/Flutter/AdMob.xcconfig`
 - set `GAD_APPLICATION_IDENTIFIER`
 
-Banner unit IDs for Flutter release builds:
-
-- copy `dart_defines.example.json` to `dart_defines.json`
-- fill `ADMOB_ANDROID_BANNER_AD_UNIT_ID` and `ADMOB_IOS_BANNER_AD_UNIT_ID`
-
-If banner IDs are empty, ads stay disabled in release.
+Banner ad unit IDs are currently defined in
+`lib/features/ads/models/admob_ids.dart`.
 
 ## 3. Versioning
 
@@ -49,7 +45,7 @@ Update `pubspec.yaml`:
 ## 4. Android release build
 
 ```bash
-flutter build appbundle --release --dart-define-from-file=dart_defines.json
+flutter build appbundle --release
 ```
 
 Output:
@@ -61,7 +57,7 @@ Output:
 Local verification without signing:
 
 ```bash
-flutter build ios --release --no-codesign --dart-define-from-file=dart_defines.json
+flutter build ios --release --no-codesign
 ```
 
 Store upload flow:

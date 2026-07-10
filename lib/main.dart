@@ -9,7 +9,10 @@ import 'features/ads/models/admob_ids.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (AdMobIds.shouldLoadAds) {
-    await MobileAds.instance.initialize();
+    final InitializationStatus status = await MobileAds.instance.initialize();
+    debugPrint(
+      '[AdMob] MobileAds initialized for ${status.adapterStatuses.length} adapter(s).',
+    );
   }
 
   runApp(const SoundscapeDaysApp());

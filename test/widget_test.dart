@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -348,16 +349,23 @@ void main() {
   });
 
   testWidgets(
-    'admob uses test banner ids outside release builds',
+    'admob uses platform-specific banner ids',
     (WidgetTester tester) async {
       expect(AdMobIds.shouldLoadAds, isTrue);
-      expect(
-        <String>{
-          'ca-app-pub-3940256099942544/6300978111',
-          'ca-app-pub-3940256099942544/2934735716',
-        }.contains(AdMobIds.bannerAdUnitId),
-        isTrue,
-      );
+      switch (defaultTargetPlatform) {
+        case TargetPlatform.android:
+          expect(
+            AdMobIds.bannerAdUnitId,
+            'ca-app-pub-3940256099942544/6300978111',
+          );
+        case TargetPlatform.iOS:
+          expect(
+            AdMobIds.bannerAdUnitId,
+            'ca-app-pub-7195864152055881/9309253650',
+          );
+        default:
+          fail('Unsupported platform in test.');
+      }
     },
     variant: const TargetPlatformVariant(<TargetPlatform>{
       TargetPlatform.android,
