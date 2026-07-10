@@ -1,1 +1,5 @@
 ADMOB_ANDROID_APP_ID=
+# Banner ad unit IDs are injected at build time.
+# Example:
+# flutter build appbundle --release \
+#   --dart-define=ADMOB_ANDROID_BANNER_AD_UNIT_ID=ca-app-pub-.../...

@@ -40,7 +40,7 @@ class _TopBannerAdState extends State<TopBannerAd> {
     }
     _loadAttempts += 1;
     debugPrint(
-      '[AdMob] Loading banner attempt $_loadAttempts/$_maxLoadAttempts for ${AdMobIds.bannerAdUnitId}.',
+      '[AdMob] Loading ${AdMobIds.bannerAdModeLabel} banner attempt $_loadAttempts/$_maxLoadAttempts for ${AdMobIds.bannerAdUnitId}.',
     );
 
     final BannerAd bannerAd = BannerAd(
@@ -58,11 +58,13 @@ class _TopBannerAdState extends State<TopBannerAd> {
             _bannerAd = ad as BannerAd;
             _isLoaded = true;
           });
-          debugPrint('[AdMob] Banner loaded for ${AdMobIds.bannerAdUnitId}.');
+          debugPrint(
+            '[AdMob] ${AdMobIds.bannerAdModeLabel} banner loaded for ${AdMobIds.bannerAdUnitId}.',
+          );
         },
         onAdFailedToLoad: (Ad ad, LoadAdError error) {
           debugPrint(
-            '[AdMob] Banner failed for ${AdMobIds.bannerAdUnitId}: $error',
+            '[AdMob] ${AdMobIds.bannerAdModeLabel} banner failed for ${AdMobIds.bannerAdUnitId}: $error',
           );
           ad.dispose();
           if (!mounted || _loadAttempts >= _maxLoadAttempts) {

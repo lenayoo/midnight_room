@@ -352,6 +352,7 @@ void main() {
     'admob uses platform-specific banner ids',
     (WidgetTester tester) async {
       expect(AdMobIds.shouldLoadAds, isTrue);
+      expect(AdMobIds.bannerAdModeLabel, 'test');
       switch (defaultTargetPlatform) {
         case TargetPlatform.android:
           expect(
@@ -361,7 +362,7 @@ void main() {
         case TargetPlatform.iOS:
           expect(
             AdMobIds.bannerAdUnitId,
-            'ca-app-pub-7195864152055881/9309253650',
+            'ca-app-pub-3940256099942544/2934735716',
           );
         default:
           fail('Unsupported platform in test.');
